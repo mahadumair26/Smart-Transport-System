@@ -6,7 +6,6 @@ import { Footer, Navbar } from "../components";
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate(); // for navigation after login
   const [formData, setFormData] = useState({ email: "", password: "" });
-  // const [email, setEmail] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -16,24 +15,28 @@ const Login = ({ setIsAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Make the POST request to login
       const response = await axios.post("http://localhost:9091/login/", formData);
       if (response.data) {
         console.log(response.data);
         
-        // const user = response.data; // Assuming the response contains user data
-        alert("Login Successful!");
-
-        // Save user data to localStorage (or you could use a state management system)
-        localStorage.setItem("email", formData.email);
-        // localStorage.setItem("user", JSON.stringify(user));
-        // console.log("user data here",user);
+        // After successful login, make a GET request to fetch user details by email
+        const userResponse = await axios.get(`http://localhost:9091/user/get/${formData.email}`);
         
+        if (userResponse.data) {
+          // Store the entire user object in localStorage
+          localStorage.setItem("user", JSON.stringify(userResponse.data)); // Store the user data in localStorage
+          
+          alert("Login Successful!");
 
-        // Update authentication state
-        setIsAuthenticated(true);
+          // Update authentication state
+          setIsAuthenticated(true);
 
-        // Redirect to the profile page
-        navigate("/");
+          // Redirect to the profile page (or any other page you want)
+          navigate("/");
+        } else {
+          alert("User data not found.");
+        }
       } else {
         alert("Invalid email or password.");
       }

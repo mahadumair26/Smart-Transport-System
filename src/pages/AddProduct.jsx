@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+    const navigate = useNavigate();
   const [productData, setProductData] = useState({
     name: '',
-    price: '',
+    price: 0,
     description: '',
-    weight: '',
-    dimension: '',
-    quantity: '',
+    weight: 0,
+    dimension: 0,
+    quantity: 0,
     status: 'active',
     user_id: 1,
-    category: '',
+    category_id: '', // Use category_id instead of category
   });
   const [categories, setCategories] = useState([]);
   const [image, setImage] = useState(null); // State to handle image file
@@ -45,26 +47,49 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Ensure category_id is an integer
     const dataToSend = {
       ...productData,
-      category_id: parseInt(productData.category, 10), // Convert category to integer
+      category_id: parseInt(productData.category_id, 10), // Convert category_id to integer
     };
-  
+
     try {
       console.log("Sending data to backend:", dataToSend);
-  
-      // Send the data as a JSON object
-      const response = await axios.post("http://localhost:9091/product/add", dataToSend, {
+
+      // Step 1: Send product data to the backend
+      const productResponse = await axios.post("http://localhost:9091/product/add", dataToSend, {
         headers: {
           "Content-Type": "application/json", // Ensure the header is set for JSON
         },
       });
-  
-      alert("Product Added Successfully");
-      console.log(response.data);
-  
+      console.log(productResponse.data.id);
+      
+
+      const  product_id  = productResponse.data.id; // Extract the product_id from the response
+
+      // Step 2: Create FormData and append the product_id and image
+      if (image) {
+        const formData = new FormData();
+        console.log(product_id);
+        console.log(image);
+        formData.append("product_id", product_id);
+        formData.append("image", image);
+        
+
+        // Step 3: Send FormData to the backend for the image
+        await axios.post("http://localhost:9091/product-image/add", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set header for FormData
+          },
+        });
+
+        alert("Product and Image Added Successfully");
+        navigate("/my-product");
+      } else {
+        alert("Product added, but no image was uploaded");
+      }
+
       // Reset the form after successful submission
       setProductData({
         name: '',
@@ -75,16 +100,14 @@ const AddProduct = () => {
         quantity: '',
         status: 'available',
         user_id: 1,
-        category: '',
+        category_id: '', // Reset category_id
       });
+      setImage(null); // Clear the image
     } catch (error) {
-      alert("Error adding product");
+      alert("Error adding product or uploading image");
       console.error(error);
     }
   };
-  
-  
-  
 
   return (
     <div className="container mt-5">
@@ -158,12 +181,12 @@ const AddProduct = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="category" className="form-label">Category</label>
+              <label htmlFor="category_id" className="form-label">Category</label>
               <select
                 className="form-select"
-                id="category"
-                name="category"
-                value={productData.category}
+                id="category_id"
+                name="category_id"
+                value={productData.category_id}
                 onChange={handleInputChange}
                 required
               >

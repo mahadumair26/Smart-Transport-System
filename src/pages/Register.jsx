@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Footer, Navbar } from "../components";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -11,8 +11,25 @@ const Register = () => {
         contact_no: '',
         status: 'accepted',
         email: '',
-        dob: ''
+        dob: '',
+        role: '', // Initially empty, will be populated by the user selection
     });
+    const [roles, setRoles] = useState([]); // State to hold roles fetched from the backend
+
+    useEffect(() => {
+        // Fetch roles from the backend
+        const fetchRoles = async () => {
+            try {
+                const response = await axios.get('http://localhost:9091/role/get');
+                setRoles(response.data); // Assuming the response is an array of roles
+            } catch (error) {
+                console.error('Error fetching roles:', error);
+                alert('Failed to fetch roles');
+            }
+        };
+
+        fetchRoles();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -22,27 +39,47 @@ const Register = () => {
         });
     };
 
+    const handleRoleChange = (e) => {
+        setFormData({
+            ...formData,
+            role: e.target.value,
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+
+        // Build role array based on the selected role
+        const roleArray =
+            formData.role === 'Seller'
+                ? [{ name: 'seller' }, { name: 'buyer' }]
+                : [{ name: 'buyer' }];
+
+        // Final payload to send    
+        const payload = {
+            ...formData,
+            role: roleArray,
+        };
 
         try {
-            const response = await axios.post('http://localhost:9091/user/add', formData);
-            console.log(formData.contact_no);
-            
+            console.log(payload);
+            const response = await axios.post('http://localhost:9091/user/add', payload);
             console.log('Sign up successful:', response.data);
+
+            // Reset form data after successful submission
             setFormData({
                 firstName: '',
                 lastName: '',
                 password: '',
                 contact_no: '',
-                status:'',
+                status: 'accepted',
                 email: '',
-                dob: ''
+                dob: '',
+                role: '',
             });
             alert('Sign Up Successful');
         } catch (error) {
-            console.error('There was an error signing up:', error);
+            console.error('Error during sign-up:', error);
             alert('Sign Up Failed');
         }
     };
@@ -132,6 +169,26 @@ const Register = () => {
                                     placeholder="Password"
                                     required
                                 />
+                            </div>
+                            <div className="form my-3">
+                                <label htmlFor="role">Role</label>
+                                <select
+                                    className="form-control"
+                                    id="role"
+                                    name="role"
+                                    value={formData.role}
+                                    onChange={handleRoleChange}
+                                    required
+                                >
+                                    <option value="" disabled>
+                                        Select a Role
+                                    </option>
+                                    {roles.map((role, index) => (
+                                        <option key={index} value={role.name}>
+                                            {role.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="my-3">
                                 <p>

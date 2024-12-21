@@ -19,7 +19,8 @@ import {
   Checkout,
   PageNotFound,
   AddProduct,
-  Profile, // If Profile is a named export, use this
+  Profile,
+  MyProduct, // If Profile is a named export, use this
 } from "./pages";  // Correct imports for all components
 import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
@@ -39,6 +40,10 @@ const Root = () => {
             <Route 
               path="/product" 
               element={<Products />} 
+            />
+            <Route 
+              path="/my-product" 
+              element={<MyProduct />} 
             />
             <Route 
               path="/product/:id" 
