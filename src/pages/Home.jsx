@@ -1,14 +1,14 @@
 import { Navbar, Main, Product, Footer } from "../components";
 
-function Home() {
+function Home({ isAuthenticated }) {
   return (
     <>
-      <Navbar />
+      <Navbar isAuthenticated={isAuthenticated} />
       <Main />
       <Product />
       <Footer />
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;

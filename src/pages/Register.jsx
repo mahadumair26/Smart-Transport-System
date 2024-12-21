@@ -1,48 +1,148 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { Footer, Navbar } from "../components";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 const Register = () => {
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        password: '',
+        contact_no: '',
+        status: 'accepted',
+        email: '',
+        dob: ''
+    });
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(formData);
+
+        try {
+            const response = await axios.post('http://localhost:9091/user/add', formData);
+            console.log(formData.contact_no);
+            
+            console.log('Sign up successful:', response.data);
+            setFormData({
+                firstName: '',
+                lastName: '',
+                password: '',
+                contact_no: '',
+                status:'',
+                email: '',
+                dob: ''
+            });
+            alert('Sign Up Successful');
+        } catch (error) {
+            console.error('There was an error signing up:', error);
+            alert('Sign Up Failed');
+        }
+    };
+
     return (
         <>
             <Navbar />
             <div className="container my-3 py-3">
                 <h1 className="text-center">Register</h1>
                 <hr />
-                <div class="row my-4 h-100">
+                <div className="row my-4 h-100">
                     <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-                        <form>
-                            <div class="form my-3">
-                                <label for="Name">Full Name</label>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form my-3">
+                                <label htmlFor="firstName">First Name</label>
                                 <input
-                                    type="email"
-                                    class="form-control"
-                                    id="Name"
-                                    placeholder="Enter Your Name"
+                                    type="text"
+                                    className="form-control"
+                                    id="firstName"
+                                    name="firstName"
+                                    value={formData.firstName}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter Your First Name"
+                                    required
                                 />
                             </div>
-                            <div class="form my-3">
-                                <label for="Email">Email address</label>
+                            <div className="form my-3">
+                                <label htmlFor="lastName">Last Name</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="lastName"
+                                    name="lastName"
+                                    value={formData.lastName}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter Your Last Name"
+                                    required
+                                />
+                            </div>
+                            <div className="form my-3">
+                                <label htmlFor="contact_no">Contact Number</label>
+                                <input
+                                    type="tel"
+                                    className="form-control"
+                                    id="contactNo"
+                                    name="contact_no"
+                                    value={formData.contact_no}
+                                    onChange={handleInputChange}
+                                    placeholder="Enter Your Contact Number"
+                                    required
+                                />
+                            </div>
+                            <div className="form my-3">
+                                <label htmlFor="dob">Date of Birth</label>
+                                <input
+                                    type="date"
+                                    className="form-control"
+                                    id="dob"
+                                    name="dob"
+                                    value={formData.dob}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                            <div className="form my-3">
+                                <label htmlFor="email">Email Address</label>
                                 <input
                                     type="email"
-                                    class="form-control"
-                                    id="Email"
+                                    className="form-control"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
                                     placeholder="name@example.com"
+                                    required
                                 />
                             </div>
-                            <div class="form  my-3">
-                                <label for="Password">Password</label>
+                            <div className="form my-3">
+                                <label htmlFor="password">Password</label>
                                 <input
                                     type="password"
-                                    class="form-control"
-                                    id="Password"
+                                    className="form-control"
+                                    id="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleInputChange}
                                     placeholder="Password"
+                                    required
                                 />
                             </div>
                             <div className="my-3">
-                                <p>Already has an account? <Link to="/login" className="text-decoration-underline text-info">Login</Link> </p>
+                                <p>
+                                    Already have an account?{' '}
+                                    <Link to="/login" className="text-decoration-underline text-info">
+                                        Login
+                                    </Link>
+                                </p>
                             </div>
                             <div className="text-center">
-                                <button class="my-2 mx-auto btn btn-dark" type="submit" disabled>
+                                <button className="my-2 mx-auto btn btn-dark" type="submit">
                                     Register
                                 </button>
                             </div>
@@ -52,7 +152,7 @@ const Register = () => {
             </div>
             <Footer />
         </>
-    )
-}
+    );
+};
 
-export default Register
+export default Register;
