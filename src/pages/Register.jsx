@@ -48,12 +48,23 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('set ==>',roles);
+        
 
         // Build role array based on the selected role
-        const roleArray =
-            formData.role === 'Seller'
-                ? [{ name: 'seller' }, { name: 'buyer' }]
-                : [{ name: 'buyer' }];
+        let roleArray =[];
+            if(formData.role === 'Seller'){
+               roleArray =  roles.filter(el =>{
+                 return   el.name == "Seller" || el.name == "Buyer"
+                })
+             }
+             else{ 
+                roleArray =  roles.filter(el =>{
+                    return   el.name == "Buyer"
+                   })
+            }
+            console.log(roleArray);
+            
 
         // Final payload to send    
         const payload = {

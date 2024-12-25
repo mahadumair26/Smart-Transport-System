@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const ForgetPassword = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -32,6 +34,7 @@ const ForgetPassword = () => {
       if (response.data === true) {
         setSuccessMessage("OTP verified successfully.");
         setStep(3);
+       
       } else {
         setErrorMessage("Invalid or expired OTP.");
       }
@@ -41,20 +44,27 @@ const ForgetPassword = () => {
   };
 
   // Handle Password Reset
-  const handlePasswordReset = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.patch(`${API_BASE_URL}/update-password`, { newPassword });
-      if (response.data === "Password updated successfully!") {
-        setSuccessMessage("Password reset successfully.");
-        setStep(1);
-      } else {
-        setErrorMessage("Unexpected response from the server.");
-      }
-    } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Error resetting password.");
+ // Handle Password Reset
+const handlePasswordReset = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/update-password`, { newPassword });
+    if (response.data === "Password updated successfully!") {
+      setSuccessMessage("Password reset successfully.");
+      
+      // Delay the redirection to allow user to see the success message
+      setTimeout(() => {
+        setStep(1);  // Reset step to 1 after success
+        navigate("/login");
+      }, 2000); // Wait for 2 seconds before redirecting to the login page
+    } else {
+      setErrorMessage("Unexpected response from the server.");
     }
-  };
+  } catch (error) {
+    setErrorMessage(error.response?.data?.message || "Error resetting password.");
+  }
+};
+
 
   return (
     <>
