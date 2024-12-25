@@ -85,6 +85,7 @@ const Login = ({ setIsAuthenticated }) => {
                   <Link to="/register" className="text-decoration-underline text-info">
                     Register
                   </Link>
+                  <p>Forgot password?<Link to="/forgetpassword" className="text-decoration-underline text-info">ForgetPassword</Link></p>
                 </p>
               </div>
               <div className="text-center">

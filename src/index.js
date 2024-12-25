@@ -20,7 +20,9 @@ import {
   PageNotFound,
   AddProduct,
   Profile,
-  MyProduct, // If Profile is a named export, use this
+  MyProduct,
+  ForgetPassword,
+   // If Profile is a named export, use this
 } from "./pages";  // Correct imports for all components
 import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
@@ -81,6 +83,7 @@ const Root = () => {
               path="/profile" 
               element={<Profile isAuthenticated={isAuthenticated} />} // Add Profile Route
             />
+            <Route path="/ForgetPassword" element={<ForgetPassword />} />
             <Route 
               path="*" 
               element={<PageNotFound />} 
