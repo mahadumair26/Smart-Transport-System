@@ -13,25 +13,26 @@
     const userId = userData ? userData.id : null; // Use user_id from localStorage if available
 
     useEffect(() => {
-        const fetchProducts = async () => {
-        if (userId) {
-            try {
-            const response = await axios.get(`http://localhost:9091/product/get/user/${userId}`);
-            setProducts(response.data); // Use response.data with axios
-            console.log(response.data);
-            setLoading(false);
-            } catch (error) {
-            console.error("Error fetching products:", error);
-            alert("Failed to load products");
-            }
-        } else {
-            alert("User not authenticated. Please log in.");
-        }
-        };
-
-        fetchProducts();
-    }, [userId]);
-
+      const fetchProducts = async () => {
+          if (userId) {  // Check if userId is available
+              try {
+                  // Fetch products for the user by userId
+                  const response = await axios.get(`http://localhost:9091/product/get/user/${userId}`);
+                  setProducts(response.data); // Set products data in the state
+                  console.log(response.data); // Log the fetched products
+                  setLoading(false); // Stop loading
+              } catch (error) {
+                  console.error("Error fetching products:", error);
+                  alert("Failed to load products");
+              }
+          } else {
+              alert("User not authenticated. Please log in.");
+          }
+      };
+  
+      fetchProducts(); // Call the fetch function to get products
+  }, [userId]); // Run this effect when userId changes
+  
     const Loading = () => (
         <div className="container my-5">
         <div className="row">

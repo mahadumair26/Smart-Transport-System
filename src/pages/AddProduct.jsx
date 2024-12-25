@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [productData, setProductData] = useState({
     name: '',
     price: 0,
@@ -12,8 +12,7 @@ const AddProduct = () => {
     dimension: 0,
     quantity: 0,
     status: 'active',
-    user_id: 1,
-    category_id: '', // Use category_id instead of category
+    category_id: '', // Removed static user_id
   });
   const [categories, setCategories] = useState([]);
   const [image, setImage] = useState(null); // State to handle image file
@@ -48,10 +47,20 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ensure category_id is an integer
+    // Retrieve user_id from localStorage
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const user_id = userData ? userData.id : null;
+
+    if (!user_id) {
+      alert("User not authenticated. Please log in.");
+      return;
+    }
+
+    // Add user_id to product data before sending the request
     const dataToSend = {
       ...productData,
-      category_id: parseInt(productData.category_id, 10), // Convert category_id to integer
+      user_id, // Dynamically add user_id from localStorage
+      category_id: parseInt(productData.category_id, 10), // Ensure category_id is an integer
     };
 
     try {
@@ -65,8 +74,7 @@ const AddProduct = () => {
       });
       console.log(productResponse.data.id);
       
-
-      const  product_id  = productResponse.data.id; // Extract the product_id from the response
+      const product_id = productResponse.data.id; // Extract the product_id from the response
 
       // Step 2: Create FormData and append the product_id and image
       if (image) {
@@ -75,7 +83,6 @@ const AddProduct = () => {
         console.log(image);
         formData.append("product_id", product_id);
         formData.append("image", image);
-        
 
         // Step 3: Send FormData to the backend for the image
         await axios.post("http://localhost:9091/product-image/add", formData, {
@@ -99,7 +106,6 @@ const AddProduct = () => {
         dimension: '',
         quantity: '',
         status: 'available',
-        user_id: 1,
         category_id: '', // Reset category_id
       });
       setImage(null); // Clear the image
