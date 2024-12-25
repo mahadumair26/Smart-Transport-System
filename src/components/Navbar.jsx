@@ -15,6 +15,7 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
     const logoutHandler = () => {
         localStorage.removeItem("user");
         setIsAuthenticated(false); // Ensure this function exists in props
+        navigate("/")
     };
     console.log("isAuthenticated:", isAuthenticated);
     console.log("User data from localStorage:", localStorage.getItem("user"));
