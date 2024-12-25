@@ -3,7 +3,7 @@ import { Footer, Navbar } from "../components";
 const ContactPage = () => {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container my-3 py-3">
         <h1 className="text-center">Contact Us</h1>
         <hr />

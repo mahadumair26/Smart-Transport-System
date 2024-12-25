@@ -11,7 +11,9 @@
     // Retrieve user data from localStorage and extract user_id
     const userData = JSON.parse(localStorage.getItem("user"));
     const userId = userData ? userData.id : null; // Use user_id from localStorage if available
-
+    // console.log("isAuthenticated:", isAuthenticated);
+    // console.log("User data from localStorage:", localStorage.getItem("user"));
+    
     useEffect(() => {
       const fetchProducts = async () => {
           if (userId) {  // Check if userId is available
@@ -76,7 +78,7 @@
 
     return (
         <>
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="container my-5">
             <h1 className="text-center mb-4">My Products</h1>
             {loading ? <Loading /> : <ShowProducts />}

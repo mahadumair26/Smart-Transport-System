@@ -97,7 +97,7 @@ const Register = () => {
 
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
             <div className="container my-3 py-3">
                 <h1 className="text-center">Register</h1>
                 <hr />

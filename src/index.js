@@ -5,6 +5,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import  Navbar  from "./components/Navbar";
 // import Profile from "./pages/Profile"; // Correct import for default export
 
 import {
@@ -28,12 +29,23 @@ import ScrollToTop from "./components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
 
 const Root = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to manage authentication
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check localStorage for user authentication on initial load
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) setIsAuthenticated(true);
+  }, []); // Ensure this only runs on mount
 
   return (
     <BrowserRouter>
       <ScrollToTop>
         <Provider store={store}>
+          {/* Navbar included only once here */}
+          <Navbar 
+            isAuthenticated={isAuthenticated} 
+            setIsAuthenticated={setIsAuthenticated} 
+          />
           <Routes>
             <Route 
               path="/" 
@@ -48,7 +60,7 @@ const Root = () => {
             />
             <Route 
               path="/my-product" 
-              element={<MyProduct />} 
+              element={<MyProduct isAuthenticated={isAuthenticated} />}
             />
             <Route 
               path="/product/:id" 
@@ -84,7 +96,7 @@ const Root = () => {
             />
             <Route 
               path="/profile" 
-              element={<Profile isAuthenticated={isAuthenticated} />} // Add Profile Route
+              element={<Profile isAuthenticated={isAuthenticated} />} 
             />
             <Route path="/ForgetPassword" element={<ForgetPassword />} />
             <Route 
@@ -102,6 +114,7 @@ const Root = () => {
     </BrowserRouter>
   );
 };
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Root />);

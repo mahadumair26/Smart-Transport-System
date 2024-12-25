@@ -68,7 +68,7 @@ const handlePasswordReset = async (e) => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container my-3 py-3">
         <h1 className="text-center">Forget Password</h1>
         <hr />

@@ -163,7 +163,7 @@ const Cart = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container my-3 py-3">
         <h1 className="text-center">Cart</h1>
         <hr />

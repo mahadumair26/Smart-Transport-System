@@ -16,6 +16,8 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
         localStorage.removeItem("user");
         setIsAuthenticated(false); // Ensure this function exists in props
     };
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("User data from localStorage:", localStorage.getItem("user"));
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -62,9 +64,14 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
                                 </button>
                                 {/* Add product button visible only for sellers */}
                                 {isSeller && (
-                                    <NavLink to="/addproduct" className="btn btn-outline-dark m-2">
-                                        <i className="fa fa-plus mr-1"></i> Add Product
-                                    </NavLink>
+                                    <>
+                                        <NavLink to="/addproduct" className="btn btn-outline-dark m-2">
+                                            <i className="fa fa-plus mr-1"></i> Add Product
+                                        </NavLink>
+                                        <NavLink to="/my-product" className="btn btn-outline-dark m-2">
+                                            <i className="fa fa-cogs mr-1"></i> My Products
+                                        </NavLink>
+                                    </>
                                 )}
                             </>
                         ) : (
