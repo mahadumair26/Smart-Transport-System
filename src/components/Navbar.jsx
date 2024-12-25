@@ -1,9 +1,18 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = ({ isAuthenticated }) => {
+const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
+    const navigate = useNavigate();
     const state = useSelector(state => state.handleCart);
+
+    // Logout handler
+    const logoutHandler = () => {
+        localStorage.removeItem("user");
+        setIsAuthenticated(false); // Ensure this function exists in props
+    };
+    
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -38,9 +47,17 @@ const Navbar = ({ isAuthenticated }) => {
                     </ul>
                     <div className="buttons text-center">
                         {isAuthenticated ? (
-                            <NavLink to="/profile" className="btn btn-outline-dark m-2">
-                                <i className="fa fa-user mr-1"></i> Profile
-                            </NavLink>
+                            <>
+                                <NavLink to="/profile" className="btn btn-outline-dark m-2">
+                                    <i className="fa fa-user mr-1"></i> Profile
+                                </NavLink>
+                                <button
+                                    onClick={logoutHandler}
+                                    className="btn btn-outline-dark m-2"
+                                >
+                                    <i className="fa fa-sign-out-alt mr-1"></i> Logout
+                                </button>
+                            </>
                         ) : (
                             <>
                                 <NavLink to="/login" className="btn btn-outline-dark m-2">

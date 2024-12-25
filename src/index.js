@@ -35,7 +35,10 @@ const Root = () => {
           <Routes>
             <Route 
               path="/" 
-              element={<Home isAuthenticated={isAuthenticated} />} 
+              element={<Home 
+                isAuthenticated={isAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+              />} 
             />
             <Route 
               path="/product" 
