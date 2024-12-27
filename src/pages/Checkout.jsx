@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -24,6 +25,9 @@ const Checkout = () => {
     let subtotal = 0;
     let shipping = 30.0;
     let totalItems = 0;
+    let user =  JSON.parse(localStorage.getItem("user"));
+    const [paymentMethod, setPaymentMethod] = useState("");
+
     state.map((item) => {
       return (subtotal += item.price * item.qty);
     });
@@ -31,6 +35,31 @@ const Checkout = () => {
     state.map((item) => {
       return (totalItems += item.qty);
     });
+
+    const [formData, setFormData] = useState({
+      address: user?.location?.address ? user?.location?.address : "",
+      city: user?.location?.address ? user?.location?.address : "",
+      country: user?.location?.address ? user?.location?.address : ""
+    });
+  
+    const handleChange = (event) => {
+      const { name, value } = event.target;
+      setFormData({
+        ...formData,
+        [name]: value, 
+      });
+    };
+
+    const handlePaymentChange = (event) => {
+      setPaymentMethod(event.target.value);
+    };
+
+    const handleSubmit = () => {
+      
+      
+
+    };
+
     return (
       <>
         <div className="container py-5">
@@ -77,12 +106,9 @@ const Checkout = () => {
                           type="text"
                           className="form-control"
                           id="firstName"
-                          placeholder=""
-                          required
+                          disabled
+                          value={user.firstName}
                         />
-                        <div className="invalid-feedback">
-                          Valid first name is required.
-                        </div>
                       </div>
 
                       <div className="col-sm-6 my-1">
@@ -93,12 +119,10 @@ const Checkout = () => {
                           type="text"
                           className="form-control"
                           id="lastName"
-                          placeholder=""
-                          required
+                          value={user.lastName}
+                          disabled
                         />
-                        <div className="invalid-feedback">
-                          Valid last name is required.
-                        </div>
+                      
                       </div>
 
                       <div className="col-12 my-1">
@@ -109,13 +133,10 @@ const Checkout = () => {
                           type="email"
                           className="form-control"
                           id="email"
-                          placeholder="you@example.com"
-                          required
+                          value={user.email}
+                          disabled
                         />
-                        <div className="invalid-feedback">
-                          Please enter a valid email address for shipping
-                          updates.
-                        </div>
+                      
                       </div>
 
                       <div className="col-12 my-1">
@@ -128,23 +149,10 @@ const Checkout = () => {
                           id="address"
                           placeholder="1234 Main St"
                           required
+                          value={formData.address}
+                          onChange={handleChange}
                         />
-                        <div className="invalid-feedback">
-                          Please enter your shipping address.
-                        </div>
-                      </div>
-
-                      <div className="col-12">
-                        <label for="address2" className="form-label">
-                          Address 2{" "}
-                          <span className="text-muted">(Optional)</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="address2"
-                          placeholder="Apartment or suite"
-                        />
+                        
                       </div>
 
                       <div className="col-md-5 my-1">
@@ -152,10 +160,15 @@ const Checkout = () => {
                           Country
                         </label>
                         <br />
-                        <select className="form-select" id="country" required>
-                          <option value="">Choose...</option>
-                          <option>India</option>
-                        </select>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="country"
+                          placeholder="Pakistan"
+                          required
+                          value={formData.country}
+                          onChange={handleChange}
+                        />
                         <div className="invalid-feedback">
                           Please select a valid country.
                         </div>
@@ -163,33 +176,23 @@ const Checkout = () => {
 
                       <div className="col-md-4 my-1">
                         <label for="state" className="form-label">
-                          State
+                          City
                         </label>
                         <br />
-                        <select className="form-select" id="state" required>
-                          <option value="">Choose...</option>
-                          <option>Punjab</option>
-                        </select>
-                        <div className="invalid-feedback">
-                          Please provide a valid state.
-                        </div>
-                      </div>
-
-                      <div className="col-md-3 my-1">
-                        <label for="zip" className="form-label">
-                          Zip
-                        </label>
                         <input
                           type="text"
                           className="form-control"
-                          id="zip"
-                          placeholder=""
+                          id="city"
+                          placeholder="Karachi"
                           required
+                          value={formData.city}
+                          onChange={handleChange}
                         />
                         <div className="invalid-feedback">
-                          Zip code required.
+                          Please provide a valid city.
                         </div>
                       </div>
+
                     </div>
 
                     <hr className="my-4" />
@@ -197,6 +200,41 @@ const Checkout = () => {
                     <h4 className="mb-3">Payment</h4>
 
                     <div className="row gy-3">
+                      <div className="row gy-3">
+                      
+                        <div className="col-12">
+                          <label>
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="Card"
+                              checked={paymentMethod === "Card"}
+                              onChange={handlePaymentChange}
+                            />
+                            <span> Payment by Card</span>
+                          </label>
+                        </div>
+
+                        <div className="col-12">
+                          <label>
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="Cash"
+                              checked={paymentMethod === "Cash"}
+                              onChange={handlePaymentChange}
+                            />
+                           <span> Payment by Cash</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    
+
+                    {paymentMethod === "Card" && (<div className="row gy-3">
+                      <hr></hr>
+                      <h4>Card Details</h4>
                       <div className="col-md-6">
                         <label for="cc-name" className="form-label">
                           Name on card
@@ -263,13 +301,13 @@ const Checkout = () => {
                           Security code required
                         </div>
                       </div>
-                    </div>
+                    </div>)}
 
                     <hr className="my-4" />
 
                     <button
                       className="w-100 btn btn-primary "
-                      type="submit" disabled
+                      type="submit" disabled onClick={handleSubmit}
                     >
                       Continue to checkout
                     </button>
