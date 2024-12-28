@@ -18,6 +18,8 @@ const Product = () => {
       try {
         const response = await axios.get(`http://localhost:9091/product/get/${id}`);
         setProduct(response.data);
+        console.log(product);
+        
         setFormData(response.data); // Initialize form with product data
         setLoading(false);
       } catch (error) {
