@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 const Checkout = () => {
   const state = useSelector((state) => state.handleCart);
 
@@ -37,9 +39,9 @@ const Checkout = () => {
     });
 
     const [formData, setFormData] = useState({
-      address: user?.location?.address ? user?.location?.address : "",
-      city: user?.location?.address ? user?.location?.address : "",
-      country: user?.location?.address ? user?.location?.address : ""
+      address: user?.location?.address ||  "",
+      city: user?.location?.city || "",
+      country: user?.location?.country || ""
     });
   
     const handleChange = (event) => {
@@ -54,8 +56,36 @@ const Checkout = () => {
       setPaymentMethod(event.target.value);
     };
 
-    const handleSubmit = () => {
-      
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      try{
+
+        const updateLocation = {
+          id: user?.location?.id ? user?.location?.id : 2,
+          city:formData.city,
+          country:formData.country,
+          address:formData.address
+        }
+        
+        const locationResponse = await axios.patch("http://localhost:9091/location/update", updateLocation, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if(locationResponse.data){
+          user.location = locationResponse.data;
+        }
+   
+        localStorage.setItem('user',JSON.stringify(user))
+        console.log("User location updated !..")
+
+
+
+      }catch(error){
+        console.error(error)
+      }
       
 
     };
@@ -146,7 +176,7 @@ const Checkout = () => {
                         <input
                           type="text"
                           className="form-control"
-                          id="address"
+                          name="address"
                           placeholder="1234 Main St"
                           required
                           value={formData.address}
@@ -163,7 +193,7 @@ const Checkout = () => {
                         <input
                           type="text"
                           className="form-control"
-                          id="country"
+                          name="country"
                           placeholder="Pakistan"
                           required
                           value={formData.country}
@@ -182,7 +212,7 @@ const Checkout = () => {
                         <input
                           type="text"
                           className="form-control"
-                          id="city"
+                          name="city"
                           placeholder="Karachi"
                           required
                           value={formData.city}
@@ -307,7 +337,7 @@ const Checkout = () => {
 
                     <button
                       className="w-100 btn btn-primary "
-                      type="submit" disabled onClick={handleSubmit}
+                      type="button" onClick={handleSubmit}
                     >
                       Continue to checkout
                     </button>

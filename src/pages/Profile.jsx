@@ -61,23 +61,29 @@ const Profile = () => {
               <p className="text-muted">{user.email}</p>
             </div>
             <div className="card-body text-center">
-              {user.profilePic ? (
-                <img
-                  src={user.profilePic}
-                  alt="Profile"
-                  className="rounded-circle mb-3"
-                  width="120"
-                  height="120"
-                />
-              ) : (
-                <div
-                  className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mb-3"
-                  style={{ width: "120px", height: "120px" }}
-                >
-                  <i className="fa fa-user fa-3x"></i>
-                </div>
-              )}
+              <div  className="d-flex justify-content-center">
+                {user.profilePic ? (
+                  <img
+                    src={user.profilePic}
+                    alt="Profile"
+                    className="rounded-circle mb-3"
+                    width="120"
+                    height="120"
+                  />
+                ) : (
+                  <div
+                    className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mb-3"
+                    style={{ width: "120px", height: "120px" }}
+                  >
+                    <i className="fa fa-user fa-3x"></i>
+                  </div>
+                )}
+              </div>
               <ul className="list-group list-group-flush text-left">
+              <li className="list-group-item">
+                  <strong>Email: </strong>
+                  {user.email || "Not Provided"}
+                </li>
                 <li className="list-group-item">
                   <strong>Contact Number: </strong>
                   {user.contact_no || "Not Provided"}
@@ -101,6 +107,18 @@ const Profile = () => {
                 <li className="list-group-item">
                   <strong>Joined On: </strong>
                   {user.createdDate}
+                </li>
+                <li className="list-group-item">
+                  <strong>Address </strong>
+                  {user.location.address || "Not Provided"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Country: </strong>
+                  {user.location.country || "Not Provided"}
+                </li>
+                <li className="list-group-item">
+                  <strong>City: </strong>
+                  {user.location.city || "Not Provided"}
                 </li>
               </ul>
             </div>
