@@ -110,15 +110,15 @@ const Profile = () => {
                 </li>
                 <li className="list-group-item">
                   <strong>Address </strong>
-                  {user.location.address || "Not Provided"}
+                  {user?.location?.address || "Not Provided"}
                 </li>
                 <li className="list-group-item">
                   <strong>Country: </strong>
-                  {user.location.country || "Not Provided"}
+                  {user?.location?.country || "Not Provided"}
                 </li>
                 <li className="list-group-item">
                   <strong>City: </strong>
-                  {user.location.city || "Not Provided"}
+                  {user?.location?.city || "Not Provided"}
                 </li>
               </ul>
             </div>

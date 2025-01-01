@@ -61,25 +61,35 @@ const Checkout = () => {
 
       try{
 
-        const updateLocation = {
-          id: user?.location?.id ? user?.location?.id : 2,
-          city:formData.city,
-          country:formData.country,
-          address:formData.address
+        const isLocationDetailsChanged = () =>{
+          return user?.location?.city != formData.city || 
+                 user?.location?.country != formData.country ||
+                 user?.location?.address != formData.address;
         }
-        
-        const locationResponse = await axios.patch("http://localhost:9091/location/update", updateLocation, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
 
-        if(locationResponse.data){
-          user.location = locationResponse.data;
+        if(isLocationDetailsChanged()){
+
+          const updateLocation = {
+            id: user?.location?.id,
+            city:formData.city,
+            country:formData.country,
+            address:formData.address
+          }
+          
+          const locationResponse = await axios.patch(`http://localhost:9091/location/update/${user?.id}`, updateLocation, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if(locationResponse.data){
+            user.location = locationResponse.data;
+          }
+    
+          localStorage.setItem('user',JSON.stringify(user))
+          console.log("User location updated !..")
+          
         }
-   
-        localStorage.setItem('user',JSON.stringify(user))
-        console.log("User location updated !..")
 
 
 
