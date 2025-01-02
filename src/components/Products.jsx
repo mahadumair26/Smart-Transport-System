@@ -6,12 +6,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";  // Import axios
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
   let componentMounted = true;
+  const navigate = useNavigate()
 
   const dispatch = useDispatch();
 
@@ -117,15 +119,16 @@ const Products = () => {
       id={product.id}
       key={product.id}
       className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4"
+     
     >
-      <div className="card text-center h-100" key={product.id}>
+      <div className="card text-center h-100" key={product.id}  > 
         <img
           className="card-img-top p-3"
           src={product.image}
           alt="Card"
           height={300}
         />
-        <div className="card-body">
+        <div className="card-body"  style={{ cursor: 'pointer' }}>
           <h5 className="card-title">
             {product.name ? product.name.substring(0, 12) : "No Title"}...
           </h5>

@@ -4,9 +4,12 @@ import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const state = useSelector((state) => state.handleCart);
+  let cartProducts = JSON.parse(localStorage.getItem("cart")) || []; 
+  const navigate = useNavigate();
 
   const EmptyCart = () => {
     return (
@@ -23,11 +26,45 @@ const Checkout = () => {
     );
   };
 
+  const ShowCardItems = () => {
+    
+    return (
+      <div>
+        <h6 className="d-flex justify-content-between align-items-center gap-3">
+          <span style={{ flex: 2, textAlign: "left" }}>Name</span>
+          <span style={{ flex: 1, textAlign: "center" }}>Quantity</span>
+          <span style={{ flex: 1, textAlign: "right" }}>Price</span>
+        </h6>
+        <ul className="list-group list-group-flush">
+          {cartProducts.map((item, index) => (
+            <li
+              key={index}
+              className="list-group-item d-flex justify-content-between align-items-center gap-3"
+            >
+              <span style={{ flex: 2, textAlign: "left" }}>{item?.name}</span>
+              <span style={{ flex: 1, textAlign: "center" }}>{item?.qty}</span>
+              <span style={{ flex: 1, textAlign: "right" }}>{item?.price * item?.qty}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const calculateTotalAmount = () => {
+    return cartProducts.reduce((total, item) => {
+      return total + item?.qty * item?.price;
+    }, 0);
+  };
+  
+  
+
   const ShowCheckout = () => {
     let subtotal = 0;
     let shipping = 30.0;
     let totalItems = 0;
     let user =  JSON.parse(localStorage.getItem("user"));
+   
     const [paymentMethod, setPaymentMethod] = useState("");
 
     state.map((item) => {
@@ -91,7 +128,51 @@ const Checkout = () => {
           
         }
 
+        const paymentDetails = {
+          amount:calculateTotalAmount(),
+          paymentMethod:paymentMethod,
+        }
 
+        const paymentResponse = await axios.post('http://localhost:9091/payment/add',paymentDetails,{
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+
+        if(paymentResponse.data){
+
+          const cartItems = cartProducts.map(item=>({
+            productId:item?.id,
+            quantity:item?.qty,
+            price:item?.qty*item?.price
+          }))
+
+          const orderDetails = {
+            totalAmount: calculateTotalAmount(),
+            paymentId:paymentResponse.data.id,
+            userId:user.id,
+            items:cartItems
+          }
+
+          const orderResponse = await axios.post('http://localhost:9091/order/add',orderDetails,{
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+
+          // After order remove the save products from the cart
+
+          if(orderResponse.data){
+            localStorage.removeItem("cart")
+
+            const handleConfirmOrder = () => {
+              navigate("/order-confirmed", { state: orderResponse.data });
+            };
+
+            handleConfirmOrder();
+          }
+
+        }
 
       }catch(error){
         console.error(error)
@@ -111,19 +192,17 @@ const Checkout = () => {
                 </div>
                 <div className="card-body">
                   <ul className="list-group list-group-flush">
-                    <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                      Products ({totalItems})<span>${Math.round(subtotal)}</span>
-                    </li>
+                    <ShowCardItems />
                     <li className="list-group-item d-flex justify-content-between align-items-center px-0">
-                      Shipping
-                      <span>${shipping}</span>
+                      <h6>Shipping</h6>
+                      <span>0.00</span>
                     </li>
                     <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                       <div>
                         <strong>Total amount</strong>
                       </div>
                       <span>
-                        <strong>${Math.round(subtotal + shipping)}</strong>
+                        <strong>${Math.round(calculateTotalAmount())}</strong>
                       </span>
                     </li>
                   </ul>
@@ -349,7 +428,7 @@ const Checkout = () => {
                       className="w-100 btn btn-primary "
                       type="button" onClick={handleSubmit}
                     >
-                      Continue to checkout
+                      Confirm Order
                     </button>
                   </form>
                 </div>
@@ -366,7 +445,7 @@ const Checkout = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Checkout</h1>
         <hr />
-        {state.length ? <ShowCheckout /> : <EmptyCart />}
+        {cartProducts.length ? <ShowCheckout /> : <EmptyCart />}
       </div>
       <Footer />
     </>
