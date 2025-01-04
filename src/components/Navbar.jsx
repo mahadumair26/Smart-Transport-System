@@ -3,16 +3,15 @@ import { NavLink, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { useDispatch } from "react-redux";
 
 const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
     const state = useSelector(state => state.handleCart);
 
     const [categories, setCategories] = useState([]);
-    const [searchName, setSearchName] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [categoryProducts, setCategoryProducts] = useState([]);  // State to hold category products
 
     // Fetch categories from the API
     useEffect(() => {
@@ -25,19 +24,6 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
             });
     }, []);
 
-    // Fetch products based on selected category
-    useEffect(() => {
-        if (selectedCategory) {
-            axios.get(`http://localhost:9091/product/get/category/${selectedCategory}`)
-                .then(response => {
-                    setCategoryProducts(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching products by category:', error);
-                });
-        }
-    }, [selectedCategory]);
-
     // Check user role from localStorage
     const user = JSON.parse(localStorage.getItem("user"));
     const isSeller = user && user.role && user.role.some(role => role.name === "Seller");
@@ -45,27 +31,10 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
     // Logout handler
     const logoutHandler = () => {
         localStorage.removeItem("user");
+        dispatch({ type: "CLEARCART" });
+
         setIsAuthenticated(false);
         navigate("/");
-    };
-
-    // Handle search by name
-    const handleSearch = () => {
-        let url = `http://localhost:9091/product/get/search/${searchName}`;
-        if (selectedCategory) {
-            url += `?category=${selectedCategory}`;
-        }
-
-        // Make the GET request to fetch products based on search criteria
-        axios.get(url)
-            .then(response => {
-                setSearchResults(response.data);  // Store search results in state
-                console.log('Search Results:', response.data);  // Optionally log the results
-                navigate(`/search?name=${searchName}&category=${selectedCategory}`);
-            })
-            .catch(error => {
-                console.error('Error fetching products:', error);
-            });
     };
 
     return (
@@ -141,73 +110,6 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
                     </div>
                 </div>
             </nav>
-
-            {/* Search Header */}
-            <div className="search-header bg-light py-2">
-                <div className="container">
-                    <div className="row align-items-center">
-                        <div className="col-md-4">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search by name"
-                                value={searchName}
-                                onChange={(e) => setSearchName(e.target.value)}
-                            />
-                        </div>
-                        <div className="col-md-4">
-                            <select
-                                className="form-control"
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                            >
-                                <option value="">Select Category</option>
-                                {categories.map((category) => (
-                                    <option key={category.id} value={category.name}>
-                                        {category.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="col-md-4 d-flex justify-content-md-end">
-                            <button
-                                className="btn btn-outline-dark"
-                                onClick={handleSearch}
-                            >
-                                Search
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Display Products by Category */}
-            {categoryProducts.length > 0 && (
-                <div className="category-products">
-                    <h3>Products in {selectedCategory} category</h3>
-                    <ul>
-                        {categoryProducts.map((product) => (
-                            <li key={product.id}>
-                                <Link to={`/product/${product.id}`}>{product.name}</Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            {/* Optionally display search results */}
-            {searchResults.length > 0 && (
-                <div className="search-results">
-                    <h3>Search Results</h3>
-                    <ul>
-                        {searchResults.map((product) => (
-                            <li key={product.id}>
-                                <Link to={`/product/${product.id}`}>{product.name}</Link>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
         </div>
     );
 };

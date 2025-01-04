@@ -12,5 +12,6 @@ export { default as PageNotFound } from './PageNotFound';
 export { default as Profile } from './Profile';  
 export { default as AddProduct } from './AddProduct';  
 export { default as MyProduct} from './MyProduct'
+export {default as ThankYou} from './ThankYouPage';
 
 // Correct for named export

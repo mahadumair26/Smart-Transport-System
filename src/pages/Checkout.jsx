@@ -1,9 +1,17 @@
 import React from "react";
+import { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 const Checkout = () => {
   const state = useSelector((state) => state.handleCart);
+  let cartProducts = JSON.parse(localStorage.getItem("cart")) || []; 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const EmptyCart = () => {
     return (
@@ -20,10 +28,47 @@ const Checkout = () => {
     );
   };
 
+  const ShowCardItems = () => {
+    
+    return (
+      <div>
+        <h6 className="d-flex justify-content-between align-items-center gap-3">
+          <span style={{ flex: 2, textAlign: "left" }}>Name</span>
+          <span style={{ flex: 1, textAlign: "center" }}>Quantity</span>
+          <span style={{ flex: 1, textAlign: "right" }}>Price</span>
+        </h6>
+        <ul className="list-group list-group-flush">
+          {cartProducts.map((item, index) => (
+            <li
+              key={index}
+              className="list-group-item d-flex justify-content-between align-items-center gap-3"
+            >
+              <span style={{ flex: 2, textAlign: "left" }}>{item?.name}</span>
+              <span style={{ flex: 1, textAlign: "center" }}>{item?.qty}</span>
+              <span style={{ flex: 1, textAlign: "right" }}>{item?.price * item?.qty}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const calculateTotalAmount = () => {
+    return cartProducts.reduce((total, item) => {
+      return total + item?.qty * item?.price;
+    }, 0);
+  };
+  
+  
+
   const ShowCheckout = () => {
     let subtotal = 0;
     let shipping = 30.0;
     let totalItems = 0;
+    let user =  JSON.parse(localStorage.getItem("user"));
+   
+    const [paymentMethod, setPaymentMethod] = useState("");
+
     state.map((item) => {
       return (subtotal += item.price * item.qty);
     });
@@ -31,6 +76,115 @@ const Checkout = () => {
     state.map((item) => {
       return (totalItems += item.qty);
     });
+
+    const [formData, setFormData] = useState({
+      address: user?.location?.address ||  "",
+      city: user?.location?.city || "",
+      country: user?.location?.country || ""
+    });
+  
+    const handleChange = (event) => {
+      const { name, value } = event.target;
+      setFormData({
+        ...formData,
+        [name]: value, 
+      });
+    };
+
+    const handlePaymentChange = (event) => {
+      setPaymentMethod(event.target.value);
+    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      try{
+
+        const isLocationDetailsChanged = () =>{
+          return user?.location?.city != formData.city || 
+                 user?.location?.country != formData.country ||
+                 user?.location?.address != formData.address;
+        }
+
+        if(isLocationDetailsChanged()){
+
+          const updateLocation = {
+            id: user?.location?.id,
+            city:formData.city,
+            country:formData.country,
+            address:formData.address
+          }
+          
+          const locationResponse = await axios.patch(`http://localhost:9091/location/update/${user?.id}`, updateLocation, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if(locationResponse.data){
+            user.location = locationResponse.data;
+          }
+    
+          localStorage.setItem('user',JSON.stringify(user))
+          console.log("User location updated !..")
+          
+        }
+
+        const paymentDetails = {
+          amount:calculateTotalAmount(),
+          paymentMethod:paymentMethod,
+        }
+
+        const paymentResponse = await axios.post('http://localhost:9091/payment/add',paymentDetails,{
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+
+        if(paymentResponse.data){
+
+          const cartItems = cartProducts.map(item=>({
+            productId:item?.id,
+            quantity:item?.qty,
+            price:item?.qty*item?.price
+          }))
+
+          const orderDetails = {
+            totalAmount: calculateTotalAmount(),
+            paymentId:paymentResponse.data.id,
+            userId:user.id,
+            items:cartItems
+          }
+
+          const orderResponse = await axios.post('http://localhost:9091/order/add',orderDetails,{
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+
+          // After order remove the save products from the cart
+
+          if(orderResponse.data){
+            localStorage.removeItem("cart")
+            dispatch({ type: "CLEARCART" });
+
+
+            const handleConfirmOrder = () => {
+              navigate("/order-confirmed", { state: orderResponse.data });
+            };
+
+            handleConfirmOrder();
+          }
+
+        }
+
+      }catch(error){
+        console.error(error)
+      }
+      
+
+    };
+
     return (
       <>
         <div className="container py-5">
@@ -42,19 +196,17 @@ const Checkout = () => {
                 </div>
                 <div className="card-body">
                   <ul className="list-group list-group-flush">
-                    <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                      Products ({totalItems})<span>${Math.round(subtotal)}</span>
-                    </li>
+                    <ShowCardItems />
                     <li className="list-group-item d-flex justify-content-between align-items-center px-0">
-                      Shipping
-                      <span>${shipping}</span>
+                      <h6>Shipping</h6>
+                      <span>0.00</span>
                     </li>
                     <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                       <div>
                         <strong>Total amount</strong>
                       </div>
                       <span>
-                        <strong>${Math.round(subtotal + shipping)}</strong>
+                        <strong>${Math.round(calculateTotalAmount())}</strong>
                       </span>
                     </li>
                   </ul>
@@ -77,12 +229,9 @@ const Checkout = () => {
                           type="text"
                           className="form-control"
                           id="firstName"
-                          placeholder=""
-                          required
+                          disabled
+                          value={user.firstName}
                         />
-                        <div className="invalid-feedback">
-                          Valid first name is required.
-                        </div>
                       </div>
 
                       <div className="col-sm-6 my-1">
@@ -93,12 +242,10 @@ const Checkout = () => {
                           type="text"
                           className="form-control"
                           id="lastName"
-                          placeholder=""
-                          required
+                          value={user.lastName}
+                          disabled
                         />
-                        <div className="invalid-feedback">
-                          Valid last name is required.
-                        </div>
+                      
                       </div>
 
                       <div className="col-12 my-1">
@@ -109,13 +256,10 @@ const Checkout = () => {
                           type="email"
                           className="form-control"
                           id="email"
-                          placeholder="you@example.com"
-                          required
+                          value={user.email}
+                          disabled
                         />
-                        <div className="invalid-feedback">
-                          Please enter a valid email address for shipping
-                          updates.
-                        </div>
+                      
                       </div>
 
                       <div className="col-12 my-1">
@@ -125,26 +269,13 @@ const Checkout = () => {
                         <input
                           type="text"
                           className="form-control"
-                          id="address"
+                          name="address"
                           placeholder="1234 Main St"
                           required
+                          value={formData.address}
+                          onChange={handleChange}
                         />
-                        <div className="invalid-feedback">
-                          Please enter your shipping address.
-                        </div>
-                      </div>
-
-                      <div className="col-12">
-                        <label for="address2" className="form-label">
-                          Address 2{" "}
-                          <span className="text-muted">(Optional)</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="address2"
-                          placeholder="Apartment or suite"
-                        />
+                        
                       </div>
 
                       <div className="col-md-5 my-1">
@@ -152,10 +283,15 @@ const Checkout = () => {
                           Country
                         </label>
                         <br />
-                        <select className="form-select" id="country" required>
-                          <option value="">Choose...</option>
-                          <option>India</option>
-                        </select>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="country"
+                          placeholder="Pakistan"
+                          required
+                          value={formData.country}
+                          onChange={handleChange}
+                        />
                         <div className="invalid-feedback">
                           Please select a valid country.
                         </div>
@@ -163,33 +299,23 @@ const Checkout = () => {
 
                       <div className="col-md-4 my-1">
                         <label for="state" className="form-label">
-                          State
+                          City
                         </label>
                         <br />
-                        <select className="form-select" id="state" required>
-                          <option value="">Choose...</option>
-                          <option>Punjab</option>
-                        </select>
-                        <div className="invalid-feedback">
-                          Please provide a valid state.
-                        </div>
-                      </div>
-
-                      <div className="col-md-3 my-1">
-                        <label for="zip" className="form-label">
-                          Zip
-                        </label>
                         <input
                           type="text"
                           className="form-control"
-                          id="zip"
-                          placeholder=""
+                          name="city"
+                          placeholder="Karachi"
                           required
+                          value={formData.city}
+                          onChange={handleChange}
                         />
                         <div className="invalid-feedback">
-                          Zip code required.
+                          Please provide a valid city.
                         </div>
                       </div>
+
                     </div>
 
                     <hr className="my-4" />
@@ -197,6 +323,41 @@ const Checkout = () => {
                     <h4 className="mb-3">Payment</h4>
 
                     <div className="row gy-3">
+                      <div className="row gy-3">
+                      
+                        <div className="col-12">
+                          <label>
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="Card"
+                              checked={paymentMethod === "Card"}
+                              onChange={handlePaymentChange}
+                            />
+                            <span> Payment by Card</span>
+                          </label>
+                        </div>
+
+                        <div className="col-12">
+                          <label>
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value="Cash"
+                              checked={paymentMethod === "Cash"}
+                              onChange={handlePaymentChange}
+                            />
+                           <span> Payment by Cash</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    
+
+                    {paymentMethod === "Card" && (<div className="row gy-3">
+                      <hr></hr>
+                      <h4>Card Details</h4>
                       <div className="col-md-6">
                         <label for="cc-name" className="form-label">
                           Name on card
@@ -263,15 +424,15 @@ const Checkout = () => {
                           Security code required
                         </div>
                       </div>
-                    </div>
+                    </div>)}
 
                     <hr className="my-4" />
 
                     <button
                       className="w-100 btn btn-primary "
-                      type="submit" disabled
+                      type="button" onClick={handleSubmit}
                     >
-                      Continue to checkout
+                      Confirm Order
                     </button>
                   </form>
                 </div>
@@ -288,7 +449,7 @@ const Checkout = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Checkout</h1>
         <hr />
-        {state.length ? <ShowCheckout /> : <EmptyCart />}
+        {cartProducts.length ? <ShowCheckout /> : <EmptyCart />}
       </div>
       <Footer />
     </>
