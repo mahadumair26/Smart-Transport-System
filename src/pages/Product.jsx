@@ -4,6 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 import { Footer } from "../components";
 
+
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -173,6 +174,7 @@ const Product = () => {
 
   return (
     <>
+      <searchbar />
       <div className="container">
         <div className="row">{loading ? <Loading /> : <ShowProduct />}</div>
       </div>

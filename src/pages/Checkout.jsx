@@ -5,11 +5,13 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const Checkout = () => {
   const state = useSelector((state) => state.handleCart);
   let cartProducts = JSON.parse(localStorage.getItem("cart")) || []; 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const EmptyCart = () => {
     return (
@@ -164,6 +166,8 @@ const Checkout = () => {
 
           if(orderResponse.data){
             localStorage.removeItem("cart")
+            dispatch({ type: "CLEARCART" });
+
 
             const handleConfirmOrder = () => {
               navigate("/order-confirmed", { state: orderResponse.data });
