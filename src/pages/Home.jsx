@@ -17,8 +17,8 @@ function Home() {
   return (
     <>
       {/* <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} /> */}
+      {/* <Product /> */}
       <Main />
-      <Product />
       <Footer />
     </>
   );

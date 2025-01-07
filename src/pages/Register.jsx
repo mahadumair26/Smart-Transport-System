@@ -1,226 +1,202 @@
-import React, { useState, useEffect } from 'react';
-import { Footer, Navbar } from "../components";
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
 
-const Register = () => {
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        password: '',
-        contact_no: '',
-        status: 'accepted',
-        email: '',
-        dob: '',
-        role: '', // Initially empty, will be populated by the user selection
-    });
-    const [roles, setRoles] = useState([]); // State to hold roles fetched from the backend
+function Register() {
+  const [formData, setFormData] = useState({
+    name: "",
+    fatherName: "",
+    address: "",
+    phoneNumber: "",
+    cnicImage: null,
+    class: "",
+    section: "",
+    universityIdCard: null,
+    pickTiming: "",
+    dropTiming: "",
+  });
 
-    useEffect(() => {
-        // Fetch roles from the backend
-        const fetchRoles = async () => {
-            try {
-                const response = await axios.get('http://localhost:9091/role/get');
-                setRoles(response.data); // Assuming the response is an array of roles
-            } catch (error) {
-                console.error('Error fetching roles:', error);
-                alert('Failed to fetch roles');
-            }
-        };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-        fetchRoles();
-    }, []);
+  const handleFileChange = (e) => {
+    const { name } = e.target;
+    setFormData({ ...formData, [name]: e.target.files[0] });
+  };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add your form submission logic here
+    console.log(formData);
+  };
 
-    const handleRoleChange = (e) => {
-        setFormData({
-            ...formData,
-            role: e.target.value,
-        });
-    };
+  return (
+    <div
+      style={{
+        maxWidth: "600px",
+        margin: "auto",
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Student Signup</h2>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+      >
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="text"
+          name="fatherName"
+          placeholder="Father's Name"
+          value={formData.fatherName}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <textarea
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={handleChange}
+          required
+          style={{ ...inputStyle, height: "80px" }}
+        />
+        <input
+          type="text"
+          name="phoneNumber"
+          placeholder="Phone Number"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <div>
+          <label style={labelStyle}>Upload CNIC Image:</label>
+          <input
+            type="file"
+            name="cnicImage"
+            onChange={handleFileChange}
+            required
+            style={fileInputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Class:</label>
+          <select
+            name="class"
+            value={formData.class}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          >
+            <option value="" disabled>
+              Select Your Class
+            </option>
+            <option value="1 Year">1 Year</option>
+            <option value="2 Year">2 Year</option>
+            <option value="3 Year">3 Year</option>
+            <option value="4 Year">4 Year</option>
+            <option value="Master">Master</option>
+          </select>
+        </div>
+        <input
+          type="text"
+          name="section"
+          placeholder="Section"
+          value={formData.section}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <div>
+          <label style={labelStyle}>Upload University ID Card:</label>
+          <input
+            type="file"
+            name="universityIdCard"
+            onChange={handleFileChange}
+            required
+            style={fileInputStyle}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Pick Timing:</label>
+          <select
+            name="pickTiming"
+            value={formData.pickTiming}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          >
+            <option value="" disabled>
+              Select Pick Timing
+            </option>
+            <option value="7:00 AM">7:00 AM</option>
+            <option value="8:00 AM">8:00 AM</option>
+            <option value="9:00 AM">9:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+          </select>
+        </div>
+        <div>
+          <label style={labelStyle}>Drop Timing:</label>
+          <select
+            name="dropTiming"
+            value={formData.dropTiming}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          >
+            <option value="" disabled>
+              Select Drop Timing
+            </option>
+            <option value="4:00 PM">4:00 PM</option>
+            <option value="5:00 PM">5:00 PM</option>
+            <option value="6:00 PM">6:00 PM</option>
+            <option value="7:00 PM">7:00 PM</option>
+          </select>
+        </div>
+        <button type="submit" style={buttonStyle}>
+          Submit
+        </button>
+      </form>
+    </div>
+  );
+}
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log('set ==>',roles);
-        
+const inputStyle = {
+  width: "100%",
+  padding: "10px",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
+  fontSize: "14px",
+};
 
-        // Build role array based on the selected role
-        let roleArray =[];
-            if(formData.role === 'Seller'){
-               roleArray =  roles.filter(el =>{
-                 return   el.name == "Seller" || el.name == "Buyer"
-                })
-             }
-             else{ 
-                roleArray =  roles.filter(el =>{
-                    return   el.name == "Buyer"
-                   })
-            }
-            console.log(roleArray);
-            
+const fileInputStyle = {
+  marginTop: "5px",
+};
 
-        // Final payload to send    
-        const payload = {
-            ...formData,
-            role: roleArray,
-        };
+const labelStyle = {
+  display: "block",
+  marginBottom: "5px",
+  fontWeight: "bold",
+};
 
-        try {
-            console.log(payload);
-            const response = await axios.post('http://localhost:9091/user/add', payload);
-            console.log('Sign up successful:', response.data);
-
-            // Reset form data after successful submission
-            setFormData({
-                firstName: '',
-                lastName: '',
-                password: '',
-                contact_no: '',
-                status: 'accepted',
-                email: '',
-                dob: '',
-                role: '',
-            });
-            alert('Sign Up Successful');
-        } catch (error) {
-            console.error('Error during sign-up:', error);
-            alert('Sign Up Failed');
-        }
-    };
-
-    return (
-        <>
-            {/* <Navbar /> */}
-            <div className="container my-3 py-3">
-                <h1 className="text-center">Register</h1>
-                <hr />
-                <div className="row my-4 h-100">
-                    <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-                        <form onSubmit={handleSubmit}>
-                            <div className="form my-3">
-                                <label htmlFor="firstName">First Name</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="firstName"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter Your First Name"
-                                    required
-                                />
-                            </div>
-                            <div className="form my-3">
-                                <label htmlFor="lastName">Last Name</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="lastName"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter Your Last Name"
-                                    required
-                                />
-                            </div>
-                            <div className="form my-3">
-                                <label htmlFor="contact_no">Contact Number</label>
-                                <input
-                                    type="tel"
-                                    className="form-control"
-                                    id="contactNo"
-                                    name="contact_no"
-                                    value={formData.contact_no}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter Your Contact Number"
-                                    required
-                                />
-                            </div>
-                            <div className="form my-3">
-                                <label htmlFor="dob">Date of Birth</label>
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    id="dob"
-                                    name="dob"
-                                    value={formData.dob}
-                                    onChange={handleInputChange}
-                                    required
-                                />
-                            </div>
-                            <div className="form my-3">
-                                <label htmlFor="email">Email Address</label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    placeholder="name@example.com"
-                                    required
-                                />
-                            </div>
-                            <div className="form my-3">
-                                <label htmlFor="password">Password</label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    placeholder="Password"
-                                    required
-                                />
-                            </div>
-                            <div className="form my-3">
-                                <label htmlFor="role">Role</label>
-                                <select
-                                    className="form-control"
-                                    id="role"
-                                    name="role"
-                                    value={formData.role}
-                                    onChange={handleRoleChange}
-                                    required
-                                >
-                                    <option value="" disabled>
-                                        Select a Role
-                                    </option>
-                                    {roles.map((role, index) => (
-                                        <option key={index} value={role.name}>
-                                            {role.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="my-3">
-                                <p>
-                                    Already have an account?{' '}
-                                    <Link to="/login" className="text-decoration-underline text-info">
-                                        Login
-                                    </Link>
-                                </p>
-                            </div>
-                            <div className="text-center">
-                                <button className="my-2 mx-auto btn btn-dark" type="submit">
-                                    Register
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <Footer />
-        </>
-    );
+const buttonStyle = {
+  padding: "10px 20px",
+  backgroundColor: "#007BFF",
+  color: "#fff",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  fontSize: "16px",
 };
 
 export default Register;
