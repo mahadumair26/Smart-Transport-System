@@ -10,7 +10,7 @@ import  Navbar  from "./components/Navbar";
 
 import {
   Home,
-  Product,
+  DriverDashboard,
   Products,
   AboutPage,
   ContactPage,
@@ -19,9 +19,9 @@ import {
   Register,
   Checkout,
   PageNotFound,
-  AddProduct,
+  ManagerDashboard,
   Profile,
-  MyProduct,
+  StudentDashboard,
   ForgetPassword,
   ThankYou,
    // If Profile is a named export, use this
@@ -60,12 +60,12 @@ const Root = () => {
               element={<Products />} 
             />
             <Route 
-              path="/my-product" 
-              element={<MyProduct isAuthenticated={isAuthenticated} />}
+              path="/StudentDashboard" 
+              element={<StudentDashboard/>}
             />
             <Route 
-              path="/product/:id" 
-              element={<Product />} 
+              path="/DriverDashboard" 
+              element={<DriverDashboard />} 
             />
             <Route 
               path="/about" 
@@ -88,8 +88,8 @@ const Root = () => {
               element={<Register />} 
             />
             <Route 
-              path="/addproduct" 
-              element={<AddProduct/>} 
+              path="/ManagerDashboard" 
+              element={<ManagerDashboard/>} 
             />
             <Route 
               path="/checkout" 

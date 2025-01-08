@@ -1,0 +1,28 @@
+.student-dashboard {
+    height: 100vh;
+    background: url('https://images.unsplash.com/photo-1507537509458-b8312d35a233?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fHN0dWRlbnR8ZW58MHx8MHx8fDI%3D') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .overlay {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+  }
+  
+  .button-group .btn {
+    width: 200px;
+    margin: 10px auto;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .button-group .btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  
