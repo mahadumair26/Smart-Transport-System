@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 const ManagerDashboard = () => {
   const [showAddDriverForm, setShowAddDriverForm] = useState(false); // Toggle form visibility
   const [driverDetails, setDriverDetails] = useState({
@@ -8,12 +8,12 @@ const ManagerDashboard = () => {
     route: "",
     license: "",
   });
-
+  const navigate = useNavigate(); 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setDriverDetails((prev) => ({ ...prev, [name]: value }));
   };
-
+  
   const handleAddDriver = (e) => {
     e.preventDefault();
     console.log("Driver Details:", driverDetails);
@@ -139,9 +139,9 @@ const ManagerDashboard = () => {
             </button>
             <button
               style={buttonStyle}
-              onClick={() => alert("Assign Driver clicked")}
+              onClick={() => navigate("/RouteManagement")}
             >
-              Assign Driver
+              Assign Route
             </button>
           </div>
         </>

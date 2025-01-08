@@ -17,7 +17,7 @@ import {
   PaymentPage,
   Login,
   Register,
-  Checkout,
+  RouteManagement,
   PageNotFound,
   ManagerDashboard,
   Profile,
@@ -92,8 +92,8 @@ const Root = () => {
               element={<ManagerDashboard/>} 
             />
             <Route 
-              path="/checkout" 
-              element={<Checkout />} 
+              path="/RouteManagement" 
+              element={<RouteManagement />} 
             />
             <Route 
               path="/profile" 
