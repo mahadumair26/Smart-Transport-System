@@ -3,7 +3,7 @@ export { default as Products } from './Products';
 export { default as DriverDashboard } from './DriverDashboard';
 export { default as AboutPage } from './AboutPage';
 export { default as ContactPage } from './ContactPage';
-export { default as Cart } from './Cart';
+export { default as PaymentPage } from './PaymentPage';
 export { default as Login } from './Login';
 export { default as Register } from './Register';
 export { default as Checkout } from './Checkout';

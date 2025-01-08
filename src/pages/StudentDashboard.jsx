@@ -16,7 +16,7 @@ const StudentDashboard = () => {
             <Link to="/update-timing" className="btn btn-warning btn-lg mb-3">
               Update Timing
             </Link>
-            <Link to="/view-fees" className="btn btn-success btn-lg">
+            <Link to="/PaymentPage" className="btn btn-success btn-lg">
               View Fees
             </Link>
           </div>

@@ -14,7 +14,7 @@ import {
   Products,
   AboutPage,
   ContactPage,
-  Cart,
+  PaymentPage,
   Login,
   Register,
   Checkout,
@@ -76,8 +76,8 @@ const Root = () => {
               element={<ContactPage />} 
             />
             <Route 
-              path="/cart" 
-              element={<Cart />} 
+              path="/PaymentPage" 
+              element={<PaymentPage />} 
             />
             <Route 
               path="/login" 
