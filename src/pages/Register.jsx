@@ -1,17 +1,22 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 function Register() {
   const [formData, setFormData] = useState({
     name: "",
-    fatherName: "",
+    father_name: "",
+    email: "",
+    phone_number: "",
     address: "",
-    phoneNumber: "",
-    cnicImage: null,
-    class: "",
-    section: "",
-    universityIdCard: null,
-    pickTiming: "",
-    dropTiming: "",
+    cnic: "",
+    semester: "",
+    program: "",
+    password: "",
+    pick_up_time: "",
+    pick_up_location: "",
+    drop_up_location: "",
+    uni_id_card: null,
+    photo: null,
   });
 
   const handleChange = (e) => {
@@ -24,10 +29,30 @@ function Register() {
     setFormData({ ...formData, [name]: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your form submission logic here
-    console.log(formData);
+
+    // Prepare form data for submission (including the image files)
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      if (formData[key]) {
+        formDataToSend.append(key, formData[key]);
+      }
+    }
+
+    // Send request to backend
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/student/students/", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Response from backend:", response.data);
+      alert("Form submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Error submitting form. Please try again.");
+    }
   };
 
   return (
@@ -55,9 +80,27 @@ function Register() {
         />
         <input
           type="text"
-          name="fatherName"
+          name="father_name"
           placeholder="Father's Name"
-          value={formData.fatherName}
+          value={formData.father_name}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="text"
+          name="phone_number"
+          placeholder="Phone Number"
+          value={formData.phone_number}
           onChange={handleChange}
           required
           style={inputStyle}
@@ -72,47 +115,63 @@ function Register() {
         />
         <input
           type="text"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formData.phoneNumber}
+          name="cnic"
+          placeholder="CNIC"
+          value={formData.cnic}
           onChange={handleChange}
           required
           style={inputStyle}
         />
-        <div>
-          <label style={labelStyle}>Upload CNIC Image:</label>
-          <input
-            type="file"
-            name="cnicImage"
-            onChange={handleFileChange}
-            required
-            style={fileInputStyle}
-          />
-        </div>
-        <div>
-          <label style={labelStyle}>Class:</label>
-          <select
-            name="class"
-            value={formData.class}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          >
-            <option value="" disabled>
-              Select Your Class
-            </option>
-            <option value="1 Year">1 Year</option>
-            <option value="2 Year">2 Year</option>
-            <option value="3 Year">3 Year</option>
-            <option value="4 Year">4 Year</option>
-            <option value="Master">Master</option>
-          </select>
-        </div>
+        <input
+          type="number"
+          name="semester"
+          placeholder="Semester"
+          value={formData.semester}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
         <input
           type="text"
-          name="section"
-          placeholder="Section"
-          value={formData.section}
+          name="program"
+          placeholder="Program"
+          value={formData.program}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="time"
+          name="pick_up_time"
+          placeholder="Pick-up Time"
+          value={formData.pick_up_time}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="text"
+          name="pick_up_location"
+          placeholder="Pick-up Location"
+          value={formData.pick_up_location}
+          onChange={handleChange}
+          required
+          style={inputStyle}
+        />
+        <input
+          type="text"
+          name="drop_up_location"
+          placeholder="Drop-up Location"
+          value={formData.drop_up_location}
           onChange={handleChange}
           required
           style={inputStyle}
@@ -121,47 +180,21 @@ function Register() {
           <label style={labelStyle}>Upload University ID Card:</label>
           <input
             type="file"
-            name="universityIdCard"
+            name="uni_id_card"
             onChange={handleFileChange}
             required
             style={fileInputStyle}
           />
         </div>
         <div>
-          <label style={labelStyle}>Pick Timing:</label>
-          <select
-            name="pickTiming"
-            value={formData.pickTiming}
-            onChange={handleChange}
+          <label style={labelStyle}>Upload Photo:</label>
+          <input
+            type="file"
+            name="photo"
+            onChange={handleFileChange}
             required
-            style={inputStyle}
-          >
-            <option value="" disabled>
-              Select Pick Timing
-            </option>
-            <option value="7:00 AM">7:00 AM</option>
-            <option value="8:00 AM">8:00 AM</option>
-            <option value="9:00 AM">9:00 AM</option>
-            <option value="10:00 AM">10:00 AM</option>
-          </select>
-        </div>
-        <div>
-          <label style={labelStyle}>Drop Timing:</label>
-          <select
-            name="dropTiming"
-            value={formData.dropTiming}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          >
-            <option value="" disabled>
-              Select Drop Timing
-            </option>
-            <option value="4:00 PM">4:00 PM</option>
-            <option value="5:00 PM">5:00 PM</option>
-            <option value="6:00 PM">6:00 PM</option>
-            <option value="7:00 PM">7:00 PM</option>
-          </select>
+            style={fileInputStyle}
+          />
         </div>
         <button type="submit" style={buttonStyle}>
           Submit
