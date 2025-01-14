@@ -4,7 +4,7 @@ import axios from "axios";
 import { Footer, Navbar } from "../components";
 
 const Login = ({ setIsAuthenticated }) => {
-  const navigate = useNavigate(); // for navigation after login
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleInputChange = (e) => {
@@ -15,27 +15,24 @@ const Login = ({ setIsAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Make the POST request to login
-      const response = await axios.post("http://localhost:9091/login/", formData);
-      if (response.data) {
-        console.log(response.data);
+      const response = await axios.post("http://localhost:8000/user/authenticate/", formData);
+      
+      if (response.status === 200 && response.data) {
+        const { role, id } = response.data.user;
+        console.log(response.data.user);
         
-        // After successful login, make a GET request to fetch user details by email
-        const userResponse = await axios.get(`http://localhost:9091/user/get/${formData.email}`);
-        
-        if (userResponse.data) {
-          // Store the entire user object in localStorage
-          localStorage.setItem("user", JSON.stringify(userResponse.data)); // Store the user data in localStorage
-          
-          alert("Login Successful!");
+        localStorage.setItem("user", JSON.stringify(response.data)); // Save user to localStorage
+        setIsAuthenticated(true); // Update authentication state
 
-          // Update authentication state
-          setIsAuthenticated(true);
-
-          // Redirect to the profile page (or any other page you want)
-          navigate("/");
+        // Redirect user based on their role
+        if (role === "Student") {
+          navigate("/StudentDashboard");
+        } else if (role === "Driver") {
+          navigate("/DriverDashboard");
+        } else if (role === "Manager") {
+          navigate("/ManagerDashboard");
         } else {
-          alert("User data not found.");
+          alert("Unknown role, unable to redirect.");
         }
       } else {
         alert("Invalid email or password.");
@@ -48,7 +45,6 @@ const Login = ({ setIsAuthenticated }) => {
 
   return (
     <>
-      {/* <Navbar /> */}
       <div className="container my-3 py-3">
         <h1 className="text-center">Login</h1>
         <hr />
@@ -85,7 +81,12 @@ const Login = ({ setIsAuthenticated }) => {
                   <Link to="/register" className="text-decoration-underline text-info">
                     Register
                   </Link>
-                  <p>Forgot password?<Link to="/forgetpassword" className="text-decoration-underline text-info">ForgetPassword</Link></p>
+                  <p>
+                    Forgot password?{" "}
+                    <Link to="/forgetpassword" className="text-decoration-underline text-info">
+                      Forget Password
+                    </Link>
+                  </p>
                 </p>
               </div>
               <div className="text-center">

@@ -12,21 +12,22 @@ const DriverDashboard = () => {
   useEffect(() => {
     const fetchDriverData = async () => {
       try {
-        // Mock driver info
-        const mockDriverInfo = {
-          name: "John Doe",
-          routeName: "Route 15",
-          contact: "123-456-7890",
-        };
-        setDriverInfo(mockDriverInfo);
+        // Get the user data from localStorage
+        const storedData = JSON.parse(localStorage.getItem("user"));
+        const user = storedData ? storedData.user : null;
 
-        // Mock student data
-        const mockStudents = [
-          { id: 1, name: "Alice Johnson", className: "5th Grade", contact: "555-1234" },
-          { id: 2, name: "Bob Smith", className: "6th Grade", contact: "555-5678" },
-          { id: 3, name: "Charlie Brown", className: "7th Grade", contact: "555-8765" },
-        ];
-        setStudents(mockStudents);
+        if (!user || user.role !== "Driver") {
+          alert("Unauthorized access. Redirecting...");
+          return; // Handle unauthorized access
+        }
+
+        // Fetch Driver Info using the user.id
+        const driverResponse = await axios.get(`http://localhost:8000/driver/get/${user.id}`);
+        setDriverInfo(driverResponse.data);
+
+        // Fetch Assigned Students
+        const studentsResponse = await axios.get(`http://localhost:8000/api/driver/${user.id}/students`);
+        setStudents(studentsResponse.data);
 
         setLoading(false);
       } catch (error) {
@@ -36,7 +37,9 @@ const DriverDashboard = () => {
     };
 
     fetchDriverData();
-  }, []);
+}, []);
+
+
 
   const Loading = () => (
     <div className="container my-5">

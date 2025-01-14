@@ -12,15 +12,15 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
     const [categories, setCategories] = useState([]);
 
     // Fetch categories (if needed for Timings or Routes)
-    useEffect(() => {
-        axios.get('http://localhost:9091/category/get')
-            .then(response => {
-                setCategories(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching categories:', error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     // axios.get('http://localhost:9091/category/get')
+    //         .then(response => {
+    //             setCategories(response.data);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching categories:', error);
+    //         });
+    // }, []);
 
     // User role (e.g., Student, Driver, Admin)
     const user = JSON.parse(localStorage.getItem("user"));
