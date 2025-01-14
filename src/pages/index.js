@@ -12,6 +12,6 @@ export { default as PageNotFound } from './PageNotFound';
 export { default as Profile } from './Profile';  
 export { default as ManagerDashboard } from './ManagerDashboard';  
 export { default as StudentDashboard} from './StudentDashboard'
-export {default as ThankYou} from './ThankYouPage';
+export {default as StudentDetailPage} from './StudentDetailPage';
 
 // Correct for named export

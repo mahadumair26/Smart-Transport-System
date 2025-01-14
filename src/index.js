@@ -23,7 +23,7 @@ import {
   Profile,
   StudentDashboard,
   ForgetPassword,
-  ThankYou,
+  StudentDetailPage,
    // If Profile is a named export, use this
 } from "./pages";  // Correct imports for all components
 import ScrollToTop from "./components/ScrollToTop";
@@ -109,8 +109,8 @@ const Root = () => {
               element={<PageNotFound />} 
             />
             <Route
-              path="/order-confirmed"
-              element={<ThankYou />}
+              path="/StudentDetailPage"
+              element={<StudentDetailPage />}
             >
             </Route>
           </Routes>

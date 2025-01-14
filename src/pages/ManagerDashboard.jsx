@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const ManagerDashboard = () => {
   const [showAddDriverForm, setShowAddDriverForm] = useState(false); // Toggle form visibility
   const [driverDetails, setDriverDetails] = useState({
@@ -8,12 +9,13 @@ const ManagerDashboard = () => {
     route: "",
     license: "",
   });
-  const navigate = useNavigate(); 
+  const navigate = useNavigate(); // hook to navigate between pages
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setDriverDetails((prev) => ({ ...prev, [name]: value }));
   };
-  
+
   const handleAddDriver = (e) => {
     e.preventDefault();
     console.log("Driver Details:", driverDetails);
@@ -121,7 +123,7 @@ const ManagerDashboard = () => {
           >
             <button
               style={buttonStyle}
-              onClick={() => alert("View Students clicked")}
+              onClick={() => navigate("/studentDetailPage")}
             >
               View Students
             </button>

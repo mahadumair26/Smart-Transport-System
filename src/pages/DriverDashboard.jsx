@@ -72,6 +72,7 @@ const DriverDashboard = () => {
                   <Link to={`/student/${student.id}`} className="btn btn-primary btn-sm">
                     View Student
                   </Link>
+                  
                 </td>
               </tr>
             ))}
