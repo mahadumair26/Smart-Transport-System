@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./style/studentdetailpage.css"
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -20,13 +21,13 @@ ChartJS.register(
   Legend
 );
 
-const StudentsListPage = () => {
+const StudentDetailPage = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState({});
-  const [showChart, setShowChart] = useState(false); // State to toggle chart visibility
+  const [showChart, setShowChart] = useState(false);
 
-  const baseUrl = "http://localhost:8000"; // Base URL for image paths
+  const baseUrl = "http://localhost:8000";
 
   useEffect(() => {
     const fetchStudentsData = async () => {
@@ -34,7 +35,7 @@ const StudentsListPage = () => {
         const response = await axios.get("http://localhost:8000/student/students");
         setStudents(response.data);
         setLoading(false);
-        prepareChartData(response.data); // Prepare chart data after fetching
+        prepareChartData(response.data);
       } catch (error) {
         console.error("Error fetching student data:", error);
         alert("Failed to load student data.");
@@ -42,18 +43,17 @@ const StudentsListPage = () => {
     };
 
     const prepareChartData = (data) => {
-      // Group students by program
       const programCounts = data.reduce((acc, student) => {
         acc[student.program] = (acc[student.program] || 0) + 1;
         return acc;
       }, {});
 
       setChartData({
-        labels: Object.keys(programCounts), // Program names
+        labels: Object.keys(programCounts),
         datasets: [
           {
             label: "Number of Students by Program",
-            data: Object.values(programCounts), // Count of students
+            data: Object.values(programCounts),
             backgroundColor: [
               "rgba(75, 192, 192, 0.6)",
               "rgba(153, 102, 255, 0.6)",
@@ -83,7 +83,7 @@ const StudentsListPage = () => {
 
   const Loading = () => (
     <div className="container my-5 text-center">
-      <h3>Loading...</h3>
+      <h3 className="text-muted">Loading...</h3>
     </div>
   );
 
@@ -91,14 +91,14 @@ const StudentsListPage = () => {
 
   return (
     <div className="container my-5">
-      <h2 className="mb-4 text-center">Students List</h2>
+      <h2 className="mb-4 text-center text-primary fw-bold">Students List</h2>
 
       {/* Toggle Button for Chart */}
       <div className="text-center mb-5">
         <button
-          className="btn btn-outline-primary"
+          className="btn btn-primary btn-lg shadow"
           onClick={toggleChart}
-          style={{ width: "200px" }}
+          style={{ width: "200px", borderRadius: "25px" }}
         >
           {showChart ? "Hide Chart" : "Show Chart"}
         </button>
@@ -107,7 +107,7 @@ const StudentsListPage = () => {
       {/* Chart Section */}
       {showChart && (
         <div className="my-5">
-          <h4 className="text-center mb-4">Student Data Visualization</h4>
+          <h4 className="text-center mb-4 text-secondary">Student Data Visualization</h4>
           <Bar
             data={chartData}
             options={{
@@ -115,10 +115,18 @@ const StudentsListPage = () => {
               plugins: {
                 legend: {
                   position: "top",
+                  labels: {
+                    color: "#4b4b4b",
+                  },
                 },
                 title: {
                   display: true,
                   text: "Number of Students by Program",
+                  color: "#333",
+                  font: {
+                    size: 18,
+                    weight: "bold",
+                  },
                 },
               },
             }}
@@ -127,46 +135,56 @@ const StudentsListPage = () => {
       )}
 
       {/* Students List */}
-      <div className="list-group">
+      <div className="row">
         {students.map((student) => (
-          <div
-            key={student.id}
-            className="list-group-item d-flex justify-content-between align-items-center shadow-sm mb-3"
-          >
-            <div className="d-flex align-items-center">
-              <img
-                src={
-                  student.photo
-                    ? `${baseUrl}${student.photo}`
-                    : "/path/to/default/photo.jpg"
-                }
-                alt="Student"
-                className="rounded-circle me-3"
-                style={{ width: "50px", height: "50px", objectFit: "cover" }}
-              />
-              <div>
-                <h5 className="mb-1">{student.name}</h5>
-                <p className="mb-1">
+          <div key={student.id} className="col-md-6 col-lg-4 mb-4">
+            <div className="card shadow-sm border-0 h-100">
+              <div className="card-body text-center">
+                <img
+                  src={
+                    student.photo
+                      ? `${baseUrl}${student.photo}`
+                      : "/path/to/default/photo.jpg"
+                  }
+                  alt="Student"
+                  className="rounded-circle mb-3"
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    border: "2px solid #007bff",
+                  }}
+                />
+                <h5 className="card-title text-primary fw-bold">{student.name}</h5>
+                <p className="text-muted mb-1">
                   <strong>Father's Name:</strong> {student.father_name}
                 </p>
-                <p className="mb-1">
+                <p className="text-muted mb-1">
                   <strong>Email:</strong> {student.email}
                 </p>
-                <p className="mb-1">
+                <p className="text-muted mb-1">
                   <strong>Program:</strong> {student.program}
                 </p>
-                <p className="mb-1">
+                <p className="text-muted mb-1">
                   <strong>Semester:</strong> {student.semester}
                 </p>
-                <p className="mb-1">
-                  <strong>Status:</strong> {student.status}
+                <p className="text-muted mb-3">
+                  <strong>Status:</strong>{" "}
+                  <span
+                    className={`badge ${
+                      student.status === "Active" ? "bg-success" : "bg-danger"
+                    }`}
+                  >
+                    {student.status}
+                  </span>
                 </p>
+                <a
+                  href={`/student/${student.id}`}
+                  className="btn btn-outline-primary btn-sm rounded-pill"
+                >
+                  View Details
+                </a>
               </div>
-            </div>
-            <div>
-              <a href={`/student/${student.id}`} className="btn btn-primary">
-                View Details
-              </a>
             </div>
           </div>
         ))}
@@ -175,4 +193,4 @@ const StudentsListPage = () => {
   );
 };
 
-export default StudentsListPage;
+export default StudentDetailPage;

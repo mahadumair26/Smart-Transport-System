@@ -1,0 +1,51 @@
+/* Hero Section */
+.hero-section .card {
+    border: none;
+    border-radius: 0;
+  }
+  
+  .hero-section .hero-text h1 {
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  }
+  
+  .hero-section .hero-text p {
+    color: #ddd;
+  }
+  
+  .hero-section .btn {
+    border-radius: 30px;
+  }
+  
+  /* Features Section */
+  .features-section h2 {
+    color: #333;
+  }
+  
+  .features-section .feature-icon {
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .features-section h4 {
+    color: #555;
+  }
+  
+  .features-section p {
+    color: #777;
+  }
+  
+  /* Call-to-Action Section */
+  .cta-section h3 {
+    color: #333;
+  }
+  
+  .cta-section p {
+    color: #555;
+  }
+  
+  .cta-section .btn {
+    border-radius: 30px;
+  }
+  

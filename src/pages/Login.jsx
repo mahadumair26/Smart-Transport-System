@@ -7,7 +7,6 @@ const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
 
-  // Add the handleInputChange function to update form data
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -17,33 +16,24 @@ const Login = ({ setIsAuthenticated }) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:8000/user/authenticate/", formData);
-      console.log(response.data); // Log the full response data to check the structure
-  
       if (response.status === 200 && response.data) {
-        const { role, data } = response.data; // Get the role and data
-  
-        // Check if data exists and role is defined
+        const { role, data } = response.data;
+
         if (!role || !data) {
           alert("Invalid response structure. Missing role or data.");
           return;
         }
-  
-        // Handle different role structures
-        let userData = data; // Default to data if not nested
+
+        let userData = data;
         if (role === "Driver" && data.user) {
-          userData = data.user; // If Driver, extract user data from nested `user` object
+          userData = data.user;
         }
-  
-        console.log("User Role:", role); // Log the role to check its value
-        console.log("User Data:", userData); // Log the user data to check the structure
-  
-        // Save the user's ID to localStorage
-        localStorage.setItem("userId", JSON.stringify(userData.id)); // Save user's ID to localStorage
-        localStorage.setItem("user", JSON.stringify(userData)); // Save full user data (optional)
-  
-        setIsAuthenticated(true); // Update authentication state
-  
-        // Redirect user based on their role
+
+        localStorage.setItem("userId", JSON.stringify(userData.id));
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        setIsAuthenticated(true);
+
         if (role === "Student") {
           navigate("/StudentDashboard");
         } else if (role === "Driver") {
@@ -61,63 +51,80 @@ const Login = ({ setIsAuthenticated }) => {
       alert("Something went wrong. Please try again.");
     }
   };
-  
 
-  
-  
   return (
     <>
-      <div className="container my-3 py-3">
-        <h1 className="text-center">Login</h1>
-        <hr />
-        <div className="row my-4 h-100">
-          <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-            <form onSubmit={handleSubmit}>
-              <div className="my-3">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  placeholder="name@example.com"
-                  onChange={handleInputChange}
-                  value={formData.email}
-                />
-              </div>
-              <div className="my-3">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  onChange={handleInputChange}
-                  value={formData.password}
-                />
-              </div>
-              <div className="my-3">
-                <p>
-                  New Here?{" "}
-                  <Link to="/register" className="text-decoration-underline text-info">
-                    Register
-                  </Link>
-                  <p>
-                    Forgot password?{" "}
-                    <Link to="/forgetpassword" className="text-decoration-underline text-info">
-                      Forget Password
-                    </Link>
-                  </p>
-                </p>
-              </div>
-              <div className="text-center">
-                <button className="my-2 mx-auto btn btn-dark" type="submit">
-                  Login
-                </button>
-              </div>
-            </form>
-          </div>
+      <div className="container my-5 py-5 d-flex justify-content-center align-items-center">
+        <div
+          className="login-card shadow-lg p-4 rounded"
+          style={{
+            maxWidth: "450px",
+            width: "100%",
+            background: "linear-gradient(135deg, #007bff, #6610f2)",
+            color: "#fff",
+          }}
+        >
+          <h2 className="text-center mb-4">Welcome Back!</h2>
+          <p className="text-center mb-4">Smart Transport Management System</p>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group mb-3">
+              <label htmlFor="email" className="form-label">
+                Email Address
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                placeholder="name@example.com"
+                onChange={handleInputChange}
+                value={formData.email}
+                style={{ borderRadius: "10px" }}
+              />
+            </div>
+            <div className="form-group mb-3">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                onChange={handleInputChange}
+                value={formData.password}
+                style={{ borderRadius: "10px" }}
+              />
+            </div>
+            <div className="mb-4">
+              <p className="small">
+                New Here?{" "}
+                <Link to="/register" className="text-decoration-underline text-light">
+                  Register
+                </Link>
+              </p>
+              <p className="small">
+                Forgot Password?{" "}
+                <Link to="/forgetpassword" className="text-decoration-underline text-light">
+                  Reset Password
+                </Link>
+              </p>
+            </div>
+            <div className="d-grid">
+              <button
+                className="btn btn-light btn-lg"
+                type="submit"
+                style={{
+                  backgroundColor: "#fff",
+                  color: "#007bff",
+                  borderRadius: "30px",
+                }}
+              >
+                Login
+              </button>
+            </div>
+          </form>
         </div>
       </div>
       <Footer />
