@@ -12,22 +12,21 @@ const DriverDashboard = () => {
   useEffect(() => {
     const fetchDriverData = async () => {
       try {
-        // Get the user data from localStorage
-        const storedData = JSON.parse(localStorage.getItem("user"));
-        const user = storedData ? storedData.user : null;
+        // Get the driverId from localStorage
+        const driverId = JSON.parse(localStorage.getItem("userId"));
 
-        if (!user || user.role !== "Driver") {
-          alert("Unauthorized access. Redirecting...");
-          return; // Handle unauthorized access
+        if (!driverId) {
+          alert("No driver ID found. Redirecting...");
+          return; // Handle missing driver ID
         }
 
-        // Fetch Driver Info using the user.id
-        const driverResponse = await axios.get(`http://localhost:8000/driver/get/${user.id}`);
+        // Fetch Driver Info using the stored driverId (1)
+        const driverResponse = await axios.get(`http://localhost:8000/driver/get/${driverId}`);
         setDriverInfo(driverResponse.data);
 
-        // Fetch Assigned Students
-        const studentsResponse = await axios.get(`http://localhost:8000/api/driver/${user.id}/students`);
-        setStudents(studentsResponse.data);
+        // Fetch Assigned Students for this driver
+        // const studentsResponse = await axios.get(`http://localhost:8000/api/driver/${driverId}/students`);
+        // setStudents(studentsResponse.data);
 
         setLoading(false);
       } catch (error) {
@@ -37,9 +36,7 @@ const DriverDashboard = () => {
     };
 
     fetchDriverData();
-}, []);
-
-
+  }, []); // Empty dependency array means this effect runs once when the component mounts
 
   const Loading = () => (
     <div className="container my-5">
@@ -72,7 +69,6 @@ const DriverDashboard = () => {
                   <Link to={`/student/${student.id}`} className="btn btn-primary btn-sm">
                     View Student
                   </Link>
-                  
                 </td>
               </tr>
             ))}

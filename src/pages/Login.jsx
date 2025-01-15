@@ -18,12 +18,15 @@ const Login = ({ setIsAuthenticated }) => {
       const response = await axios.post("http://localhost:8000/user/authenticate/", formData);
       
       if (response.status === 200 && response.data) {
-        const { role, id } = response.data.user;
-        console.log(response.data.user);
-        
-        localStorage.setItem("user", JSON.stringify(response.data)); // Save user to localStorage
+        const { role, id, data } = response.data; // Get role and the driver data
+        console.log(data); // Logs the driver details
+  
+        // Save the driver's ID (1) to localStorage
+        localStorage.setItem("userId", JSON.stringify(data.id)); // Save driver's ID to localStorage
+        localStorage.setItem("user", JSON.stringify(data)); // Save full user data (optional)
+  
         setIsAuthenticated(true); // Update authentication state
-
+  
         // Redirect user based on their role
         if (role === "Student") {
           navigate("/StudentDashboard");
@@ -42,6 +45,7 @@ const Login = ({ setIsAuthenticated }) => {
       alert("Something went wrong. Please try again.");
     }
   };
+  
 
   return (
     <>
