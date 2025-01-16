@@ -145,6 +145,12 @@ const ManagerDashboard = () => {
             >
               Add Route
             </button>
+            <button
+              style={buttonStyle}
+              onClick={() => navigate("/ViewRoute")}
+            >
+              View Routes
+            </button>
           </div>
         </>
       )}

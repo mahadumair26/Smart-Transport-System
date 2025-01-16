@@ -14,5 +14,7 @@ export { default as ManagerDashboard } from './ManagerDashboard';
 export { default as StudentDashboard} from './StudentDashboard'
 export {default as StudentDetailPage} from './StudentDetailPage';
 export {default as AddRoute} from './AddRoute';
+export {default as ViewRoute} from './ViewRoute';
+export {default as ManagerAssignment} from './ManagerAssignment';
 
 // Correct for named export

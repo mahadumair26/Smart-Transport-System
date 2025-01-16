@@ -25,6 +25,8 @@ import {
   ForgetPassword,
   StudentDetailPage,
   AddRoute,
+  ViewRoute,
+  ManagerAssignment,
    // If Profile is a named export, use this
 } from "./pages";  // Correct imports for all components
 import ScrollToTop from "./components/ScrollToTop";
@@ -61,12 +63,24 @@ const Root = () => {
               element={<AddVehiclePage/>} 
             />
             <Route 
-              path="/StudentDashboard" 
-              element={<StudentDashboard/>}
+              path="/AddVehiclePage" 
+              element={<AddVehiclePage/>} 
+            />
+            <Route 
+              path="/ManagerAssignment" 
+              element={<ManagerAssignment/>}
             />
             <Route 
               path="/DriverDashboard" 
               element={<DriverDashboard />} 
+            />
+            <Route 
+              path="/DriverDashboard" 
+              element={<DriverDashboard />} 
+            />
+            <Route 
+              path="/ViewRoute" 
+              element={<ViewRoute />} 
             />
             <Route 
               path="/AddRoute" 
