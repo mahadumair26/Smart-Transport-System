@@ -1,5 +1,5 @@
 export { default as Home } from './Home';
-export { default as Products } from './Products';
+export { default as AddVehiclePage } from './AddVehiclePage.jsx';
 export { default as DriverDashboard } from './DriverDashboard';
 export { default as AboutPage } from './AboutPage';
 export { default as ContactPage } from './ContactPage';
@@ -13,5 +13,6 @@ export { default as Profile } from './Profile';
 export { default as ManagerDashboard } from './ManagerDashboard';  
 export { default as StudentDashboard} from './StudentDashboard'
 export {default as StudentDetailPage} from './StudentDetailPage';
+export {default as AddRoute} from './AddRoute';
 
 // Correct for named export

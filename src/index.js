@@ -11,7 +11,7 @@ import  Navbar  from "./components/Navbar";
 import {
   Home,
   DriverDashboard,
-  Products,
+  AddVehiclePage,
   AboutPage,
   ContactPage,
   PaymentPage,
@@ -24,6 +24,7 @@ import {
   StudentDashboard,
   ForgetPassword,
   StudentDetailPage,
+  AddRoute,
    // If Profile is a named export, use this
 } from "./pages";  // Correct imports for all components
 import ScrollToTop from "./components/ScrollToTop";
@@ -56,8 +57,8 @@ const Root = () => {
               />} 
             />
             <Route 
-              path="/product" 
-              element={<Products />} 
+              path="/AddVehiclePage" 
+              element={<AddVehiclePage/>} 
             />
             <Route 
               path="/StudentDashboard" 
@@ -66,6 +67,10 @@ const Root = () => {
             <Route 
               path="/DriverDashboard" 
               element={<DriverDashboard />} 
+            />
+            <Route 
+              path="/AddRoute" 
+              element={<AddRoute />} 
             />
             <Route 
               path="/about" 

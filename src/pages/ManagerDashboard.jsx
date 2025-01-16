@@ -135,15 +135,15 @@ const ManagerDashboard = () => {
             </button>
             <button
               style={buttonStyle}
-              onClick={() => alert("Add Vehicle clicked")}
+              onClick={() => navigate("/AddVehiclePage")}
             >
               Add Vehicle
             </button>
             <button
               style={buttonStyle}
-              onClick={() => navigate("/RouteManagement")}
+              onClick={() => navigate("/AddRoute")}
             >
-              Assign Route
+              Add Route
             </button>
           </div>
         </>
