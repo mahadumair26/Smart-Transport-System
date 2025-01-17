@@ -16,5 +16,6 @@ export {default as StudentDetailPage} from './StudentDetailPage';
 export {default as AddRoute} from './AddRoute';
 export {default as ViewRoute} from './ViewRoute';
 export {default as ManagerAssignment} from './ManagerAssignment';
+export {default as AddDriver} from './AddDriver';
 
 // Correct for named export

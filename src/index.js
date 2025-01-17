@@ -27,6 +27,7 @@ import {
   AddRoute,
   ViewRoute,
   ManagerAssignment,
+  AddDriver,
    // If Profile is a named export, use this
 } from "./pages";  // Correct imports for all components
 import ScrollToTop from "./components/ScrollToTop";
@@ -67,6 +68,10 @@ const Root = () => {
               element={<AddVehiclePage/>} 
             />
             <Route 
+              path="/AddVehiclePage" 
+              element={<AddVehiclePage/>} 
+            />
+            <Route 
               path="/ManagerAssignment" 
               element={<ManagerAssignment/>}
             />
@@ -75,8 +80,8 @@ const Root = () => {
               element={<DriverDashboard />} 
             />
             <Route 
-              path="/DriverDashboard" 
-              element={<DriverDashboard />} 
+              path="/AddDriver" 
+              element={<AddDriver />} 
             />
             <Route 
               path="/ViewRoute" 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Select, MenuItem, Button, Card, Typography } from "@mui/material";
+import { Select, MenuItem, Button, Card, Typography, TextField } from "@mui/material";
 import "./style/ManagerAssignment.css";
 import RouteMap from "../components/RouteMap.jsx";
 
@@ -94,6 +94,27 @@ const ManagerAssignment = () => {
             ))}
           </Select>
         </div>
+
+        <div className="time-fields">
+          <TextField
+            label="Start Time"
+            type="time"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            style={{ marginTop: "20px" }}
+          />
+          <TextField
+            label="End Time"
+            type="time"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            style={{ marginTop: "20px" }}
+          />
+        </div>
       </div>
 
       {/* Display the map only if a route is selected */}
@@ -121,6 +142,12 @@ const ManagerAssignment = () => {
           {selectedRouteDetails
             ? `${selectedRouteDetails.start_location} - ${selectedRouteDetails.end_location}`
             : "N/A"}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Start Time:</strong> {startTime || "N/A"}
+        </Typography>
+        <Typography variant="body1">
+          <strong>End Time:</strong> {endTime || "N/A"}
         </Typography>
       </Card>
 
