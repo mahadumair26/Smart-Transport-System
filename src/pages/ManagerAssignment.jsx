@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Select, MenuItem, Button, Card, Typography, TextField } from "@mui/material";
 import "./style/ManagerAssignment.css";
 import RouteMap from "../components/RouteMap.jsx";
+import axios from "axios"
 
 const ManagerAssignment = () => {
   const [drivers, setDrivers] = useState([]);
@@ -28,14 +29,40 @@ const ManagerAssignment = () => {
 
   const handleSubmit = async () => {
     const payload = {
-      driver_id: selectedDriver,
-      vehicle_id: selectedVehicle,
-      route_id: selectedRoute,
-      start_time: startTime,
-      end_time: endTime,
+      user: {
+        id: 1, // Assuming a fixed user ID for now. Replace with dynamic data if needed.
+      },
+      driver: {
+        id: selectedDriver, // The selected driver ID
+      },
+      vehicle: {
+        id: selectedVehicle, // The selected vehicle ID
+      },
+      route: {
+        id: selectedRoute, // The selected route ID
+      },
+      start_time: startTime, // Selected start time
+      end_time: endTime, // Selected end time
     };
-    console.log(payload);
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/manager-assignments/add/",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Assignment created successfully:", response.data);
+      alert("Assignment created successfully!");
+    } catch (error) {
+      console.error("Error creating assignment:", error);
+      alert("Failed to create assignment. Please try again.");
+    }
   };
+  
 
   // Find the selected route details
   const selectedRouteDetails = routes.find((route) => route.id === selectedRoute);

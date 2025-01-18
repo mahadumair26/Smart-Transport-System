@@ -129,7 +129,7 @@ const ManagerDashboard = () => {
             </button>
             <button
               style={buttonStyle}
-              onClick={() => setShowAddDriverForm(true)}
+              onClick={() => navigate("/AddDriver")}
             >
               Add Driver
             </button>
@@ -150,6 +150,12 @@ const ManagerDashboard = () => {
               onClick={() => navigate("/ViewRoute")}
             >
               View Routes
+            </button>
+            <button
+              style={buttonStyle}
+              onClick={() => navigate("/ManagerAssignment")}
+            >
+              Manager Assignment
             </button>
           </div>
         </>
