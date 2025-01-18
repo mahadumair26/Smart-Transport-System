@@ -1,4 +1,4 @@
-.student-dashboard {
+/* .student-dashboard {
     height: 100vh;
     background: url('https://images.unsplash.com/photo-1507537509458-b8312d35a233?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fHN0dWRlbnR8ZW58MHx8MHx8fDI%3D') no-repeat center center/cover;
     display: flex;
@@ -24,5 +24,46 @@
   .button-group .btn:hover {
     transform: scale(1.05);
     opacity: 0.9;
+  }
+   */
+   .student-dashboard {
+    background-color: #f4f7fc;
+    font-family: Arial, sans-serif;
+  }
+  
+  .card-header {
+    font-weight: bold;
+  }
+  
+  .card-body {
+    font-size: 16px;
+  }
+  
+  .card {
+    border-radius: 10px;
+  }
+  
+  .card-body p {
+    margin-bottom: 10px;
+  }
+  
+  .map-container {
+    height: 500px;
+  }
+  
+  .card-header.bg-warning {
+    background-color: #ff9800 !important;
+  }
+  
+  .card-header.bg-primary {
+    background-color: #007bff !important;
+  }
+  
+  .card-header.bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  .card-header.bg-info {
+    background-color: #17a2b8 !important;
   }
   

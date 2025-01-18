@@ -76,6 +76,10 @@ const Root = () => {
               element={<ManagerAssignment/>}
             />
             <Route 
+              path="/StudentDashboard" 
+              element={<StudentDashboard/>}
+            />
+            <Route 
               path="/DriverDashboard" 
               element={<DriverDashboard />} 
             />

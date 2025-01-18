@@ -8,30 +8,35 @@ const DriverDashboard = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [driverInfo, setDriverInfo] = useState({});
+  const [error, setError] = useState(null); // State to manage error messages
 
   useEffect(() => {
     const fetchDriverData = async () => {
       try {
         // Get the driverId from localStorage
         const driverId = JSON.parse(localStorage.getItem("userId"));
+        console.log(driverId);
+        
 
         if (!driverId) {
-          alert("No driver ID found. Redirecting...");
+          setError("No driver ID found. Please log in again.");
+          setLoading(false);
           return; // Handle missing driver ID
         }
 
-        // Fetch Driver Info using the stored driverId (1)
+        // Fetch Driver Info using the stored driverId
         const driverResponse = await axios.get(`http://localhost:8000/driver/get/${driverId}`);
         setDriverInfo(driverResponse.data);
 
         // Fetch Assigned Students for this driver
-        // const studentsResponse = await axios.get(`http://localhost:8000/api/driver/${driverId}/students`);
-        // setStudents(studentsResponse.data);
+        const studentsResponse = await axios.get(`http://localhost:8000/driver/get_students/${driverId}/`);
+        setStudents(studentsResponse.data);
 
         setLoading(false);
       } catch (error) {
         console.error("Error fetching driver data:", error);
-        alert("Failed to load dashboard data.");
+        setError("Failed to load dashboard data.");
+        setLoading(false);
       }
     };
 
@@ -53,23 +58,25 @@ const DriverDashboard = () => {
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Class</th>
-              <th>Contact</th>
-              <th>Actions</th>
+              <th>Father's Name</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+              <th>Pick-Up Location</th>
+              <th>Pick-Up Time</th>
+              <th>Drop-Off Location</th>
             </tr>
           </thead>
           <tbody>
             {students.map((student, index) => (
-              <tr key={student.id}>
+              <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{student.name}</td>
-                <td>{student.className}</td>
-                <td>{student.contact}</td>
-                <td>
-                  <Link to={`/student/${student.id}`} className="btn btn-primary btn-sm">
-                    View Student
-                  </Link>
-                </td>
+                <td>{student.father_name}</td>
+                <td>{student.email}</td>
+                <td>{student.phone_number}</td>
+                <td>{student.pick_up_location}</td>
+                <td>{student.pick_up_time}</td>
+                <td>{student.drop_up_location}</td>
               </tr>
             ))}
           </tbody>
@@ -101,6 +108,8 @@ const DriverDashboard = () => {
         <h1 className="text-center mb-4">Driver Dashboard</h1>
         {loading ? (
           <Loading />
+        ) : error ? (
+          <div className="alert alert-danger">{error}</div> // Show error message if any
         ) : (
           <>
             <ShowDriverInfo />

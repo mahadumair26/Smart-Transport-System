@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function Register() {
@@ -18,6 +18,22 @@ function Register() {
     uni_id_card: null,
     photo: null,
   });
+
+  const [stops, setStops] = useState([]);
+
+  useEffect(() => {
+    // Fetch stops from the API on component mount
+    const fetchStops = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/stops/get/");
+        setStops(response.data);
+      } catch (error) {
+        console.error("Error fetching stops:", error);
+      }
+    };
+
+    fetchStops();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -158,15 +174,20 @@ function Register() {
           required
           style={inputStyle}
         />
-        <input
-          type="text"
+        <select
           name="pick_up_location"
-          placeholder="Pick-up Location"
           value={formData.pick_up_location}
           onChange={handleChange}
           required
           style={inputStyle}
-        />
+        >
+          <option value="">Select Pick-up Location</option>
+          {stops.map((stop) => (
+            <option key={stop.id} value={stop.location_name}>
+              {stop.location_name}
+            </option>
+          ))}
+        </select>
         <input
           type="text"
           name="drop_up_location"

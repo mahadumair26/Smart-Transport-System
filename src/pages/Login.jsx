@@ -25,9 +25,12 @@ const Login = ({ setIsAuthenticated }) => {
         }
 
         let userData = data;
-        if (role === "Driver" && data.user) {
-          userData = data.user;
-        }
+        // if (role === "Driver" && data.user) {
+
+        //   userData = data;
+          
+        // }
+        console.log(userData);
 
         localStorage.setItem("userId", JSON.stringify(userData.id));
         localStorage.setItem("user", JSON.stringify(userData));

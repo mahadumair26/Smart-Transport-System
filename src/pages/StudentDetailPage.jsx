@@ -1,33 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./style/studentdetailpage.css"
 import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const StudentDetailPage = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState({});
   const [showChart, setShowChart] = useState(false);
-
-  const baseUrl = "http://localhost:8000";
 
   useEffect(() => {
     const fetchStudentsData = async () => {
@@ -75,25 +57,24 @@ const StudentDetailPage = () => {
     };
 
     fetchStudentsData();
-  }, []);
+  }, []); // Empty dependency array ensures it runs once when the component is mounted
 
   const toggleChart = () => {
     setShowChart((prev) => !prev);
   };
 
-  const Loading = () => (
-    <div className="container my-5 text-center">
-      <h3 className="text-muted">Loading...</h3>
-    </div>
-  );
-
-  if (loading) return <Loading />;
+  if (loading) {
+    return (
+      <div className="container my-5 text-center">
+        <h3 className="text-muted">Loading...</h3>
+      </div>
+    );
+  }
 
   return (
     <div className="container my-5">
       <h2 className="mb-4 text-center text-primary fw-bold">Students List</h2>
 
-      {/* Toggle Button for Chart */}
       <div className="text-center mb-5">
         <button
           className="btn btn-primary btn-lg shadow"
@@ -104,7 +85,6 @@ const StudentDetailPage = () => {
         </button>
       </div>
 
-      {/* Chart Section */}
       {showChart && (
         <div className="my-5">
           <h4 className="text-center mb-4 text-secondary">Student Data Visualization</h4>
@@ -134,18 +114,13 @@ const StudentDetailPage = () => {
         </div>
       )}
 
-      {/* Students List */}
       <div className="row">
         {students.map((student) => (
           <div key={student.id} className="col-md-6 col-lg-4 mb-4">
             <div className="card shadow-sm border-0 h-100">
               <div className="card-body text-center">
                 <img
-                  src={
-                    student.photo
-                      ? `${baseUrl}${student.photo}`
-                      : "/path/to/default/photo.jpg"
-                  }
+                  src={student.photo ? `http://localhost:8000${student.photo}` : "/path/to/default/photo.jpg"}
                   alt="Student"
                   className="rounded-circle mb-3"
                   style={{
@@ -169,12 +144,8 @@ const StudentDetailPage = () => {
                   <strong>Semester:</strong> {student.semester}
                 </p>
                 <p className="text-muted mb-3">
-                  <strong>Status:</strong>{" "}
-                  <span
-                    className={`badge ${
-                      student.status === "Active" ? "bg-success" : "bg-danger"
-                    }`}
-                  >
+                  <strong>Status:</strong>
+                  <span className={`badge ${student.status === "Active" ? "bg-success" : "bg-danger"}`}>
                     {student.status}
                   </span>
                 </p>
