@@ -22,7 +22,8 @@ const StudentDashboard = () => {
       fetch(`http://localhost:8000/student-trips/get-student-trip-details/${studentId}`)
         .then((response) => response.json())
         .then((data) => {
-          setTrips(data.trips || []);
+          const allTrips = data.trips || [];
+          setTrips(allTrips.slice(-2).reverse()); // Get the last two trips
           setLoading(false);
         })
         .catch((error) => {
@@ -38,43 +39,44 @@ const StudentDashboard = () => {
       <div className="container py-5">
         <h1 className="text-center mb-5 text-primary">Student Dashboard</h1>
         <div className="row">
-          {/* Profile Section */}
-          <div className="col-lg-6 mb-4">
-            <div className="card shadow-sm">
-              <div className="card-header bg-primary text-white">
-                <h3>Profile</h3>
-              </div>
-              <div className="card-body">
-                <p><strong>Name:</strong> {studentData?.name || "N/A"}</p>
-                <p><strong>Father's Name:</strong> {studentData?.father_name || "N/A"}</p>
-                <p><strong>Email:</strong> {studentData?.email || "N/A"}</p>
-                <p><strong>Phone Number:</strong> {studentData?.phone_number || "N/A"}</p>
-                <p><strong>Address:</strong> {studentData?.address || "N/A"}</p>
-                <p><strong>CNIC:</strong> {studentData?.cnic || "N/A"}</p>
-                <p><strong>Semester:</strong> {studentData?.semester || "N/A"}</p>
-                <p><strong>Program:</strong> {studentData?.program || "N/A"}</p>
-              </div>
-            </div>
-          </div>
-
-         {/* Trips as Cards */}
-<div className="col-lg-12 mb-4">
-  <div className="card shadow-sm">
-    <div className="card-header bg-danger text-white">
-      <h3>Trip History</h3>
+         {/* Profile Section and Trips Side by Side */}
+<div className="row">
+  {/* Profile Section */}
+  <div className="col-lg-6 mb-4">
+    <div className="card shadow-sm">
+      <div className="card-header bg-primary text-white">
+        <h3>Profile</h3>
+      </div>
+      <div className="card-body">
+        <p><strong>Name:</strong> {studentData?.name || "N/A"}</p>
+        <p><strong>Father's Name:</strong> {studentData?.father_name || "N/A"}</p>
+        <p><strong>Email:</strong> {studentData?.email || "N/A"}</p>
+        <p><strong>Phone Number:</strong> {studentData?.phone_number || "N/A"}</p>
+        <p><strong>Address:</strong> {studentData?.address || "N/A"}</p>
+        <p><strong>CNIC:</strong> {studentData?.cnic || "N/A"}</p>
+        <p><strong>Semester:</strong> {studentData?.semester || "N/A"}</p>
+        <p><strong>Program:</strong> {studentData?.program || "N/A"}</p>
+      </div>
     </div>
-    <div className="card-body">
-      {loading ? (
-        <p>Loading trip details...</p>
-      ) : error ? (
-        <p className="text-danger">{error}</p>
-      ) : trips.length > 0 ? (
-        <div className="row">
-          {trips.map((trip, index) => (
-            <div className="col-md-4 mb-3" key={index}>
-              <div className="card border-primary shadow-sm">
+  </div>
+
+  {/* Last Two Trips Section */}
+  <div className="col-lg-6 mb-4">
+    <div className="card shadow-sm">
+      <div className="card-header bg-danger text-white">
+        <h3>Last Two Trips</h3>
+      </div>
+      <div className="card-body">
+        {loading ? (
+          <p>Loading trip details...</p>
+        ) : error ? (
+          <p className="text-danger">{error}</p>
+        ) : trips.length > 0 ? (
+          <div>
+            {trips.map((trip, index) => (
+              <div className="card mb-3 border-primary shadow-sm" key={index}>
                 <div className="card-body">
-                  <h5 className="card-title">Trip #{index + 1}</h5>
+                  
                   <p><strong>Pickup:</strong> {trip.pickup_time || "N/A"}</p>
                   <p><strong>End:</strong> {trip.end_time || "N/A"}</p>
                   <p><strong>Date:</strong> {trip.trip_date || "N/A"}</p>
@@ -82,15 +84,16 @@ const StudentDashboard = () => {
                   <p><strong>Driver:</strong> {trip.driver?.name || "N/A"}</p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No trips available.</p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p>No trips available.</p>
+        )}
+      </div>
     </div>
   </div>
 </div>
+
 
 
           {/* Driver Information */}
