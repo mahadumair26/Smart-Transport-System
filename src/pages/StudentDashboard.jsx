@@ -1,4 +1,6 @@
-import React from "react";
+// src/components/StudentDashboard.js
+
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/StudentDashboard.css";
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
@@ -6,9 +8,30 @@ import "leaflet/dist/leaflet.css";
 
 const StudentDashboard = () => {
   const studentData = JSON.parse(localStorage.getItem("user"));
+  const studentId = studentData?.id;
   const driverData = studentData?.driver;
   const vehicleData = driverData?.vehicle;
   const stops = vehicleData?.route?.stops;
+
+  const [trips, setTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (studentId) {
+      fetch(`http://localhost:8000/student-trips/get-student-trip-details/${studentId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setTrips(data.trips || []);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching trip details:", error);
+          setError("Failed to load trip details.");
+          setLoading(false);
+        });
+    }
+  }, [studentId]);
 
   return (
     <div className="student-dashboard bg-light">
@@ -34,20 +57,41 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          {/* Fees Section */}
-          <div className="col-lg-6 mb-4">
-            <div className="card shadow-sm">
-              <div className="card-header bg-success text-white">
-                <h3>Fees</h3>
-              </div>
-              <div className="card-body">
-                <p><strong>Pick-Up Location:</strong> {studentData?.pick_up_location || "N/A"}</p>
-                <p><strong>Drop-Up Location:</strong> {studentData?.drop_up_location || "N/A"}</p>
-                <p><strong>Pick-Up Time:</strong> {studentData?.pick_up_time || "N/A"}</p>
-                <p><strong>Status:</strong> {studentData?.status || "N/A"}</p>
+         {/* Trips as Cards */}
+<div className="col-lg-12 mb-4">
+  <div className="card shadow-sm">
+    <div className="card-header bg-danger text-white">
+      <h3>Trip History</h3>
+    </div>
+    <div className="card-body">
+      {loading ? (
+        <p>Loading trip details...</p>
+      ) : error ? (
+        <p className="text-danger">{error}</p>
+      ) : trips.length > 0 ? (
+        <div className="row">
+          {trips.map((trip, index) => (
+            <div className="col-md-4 mb-3" key={index}>
+              <div className="card border-primary shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title">Trip #{index + 1}</h5>
+                  <p><strong>Pickup:</strong> {trip.pickup_time || "N/A"}</p>
+                  <p><strong>End:</strong> {trip.end_time || "N/A"}</p>
+                  <p><strong>Date:</strong> {trip.trip_date || "N/A"}</p>
+                  <p><strong>Cost:</strong> {trip.trip_cost !== null ? `$${trip.trip_cost.toFixed(2)}` : "N/A"}</p>
+                  <p><strong>Driver:</strong> {trip.driver?.name || "N/A"}</p>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+      ) : (
+        <p>No trips available.</p>
+      )}
+    </div>
+  </div>
+</div>
+
 
           {/* Driver Information */}
           <div className="col-lg-6 mb-4">
@@ -132,6 +176,7 @@ const StudentDashboard = () => {
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
